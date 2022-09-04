@@ -1,4 +1,4 @@
-name: Hexo-CI
+name: CI
 
 on:
   push:
@@ -6,58 +6,62 @@ on:
       - main
 
 env:
-GIT_USER: hyperter96
-GIT_EMAIL: hyperter96@gmail.com
-THEME_NAME: hexo-theme-butterfly
-DEPLOY_REPO: hyperter96/hyperter96.github.io
-DEPLOY_BRANCH: main
+  GIT_USER: hyperter96
+  GIT_EMAIL: hyperter96@gmail.com
+  THEME_REPO: jerryc127/hexo-theme-butterfly
+  THEME_BRANCH: master
+  DEPLOY_REPO: hyperter96/hyperter96.github.io
+  DEPLOY_BRANCH: main
 
 jobs:
-build:
-  name: Build on node ${{ matrix.node_version }} and ${{ matrix.os }}
-  runs-on: ubuntu-latest
-  strategy:
-  matrix:
-    os: [ubuntu-latest]
-    node_version: [16.x]
+  build:
+    name: Build on node ${{ matrix.node_version }} and ${{ matrix.os }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        node_version: [16.x]
 
-  steps:
-    - name: Checkout
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Checkout theme repo
         uses: actions/checkout@v2
         with:
-        ref: master
+          repository: ${{ env.THEME_REPO }}
+          ref: ${{ env.THEME_BRANCH }}
+          path: themes/butterfly
 
-
-    - name: Checkout deploy repo
+      - name: Checkout deploy repo
         uses: actions/checkout@v2
         with:
-        repository: ${{ env.DEPLOY_REPO }}
-        ref: ${{ env.DEPLOY_BRANCH }}
-        path: .deploy_git
+          repository: ${{ env.DEPLOY_REPO }}
+          ref: ${{ env.DEPLOY_BRANCH }}
+          path: .deploy_git
 
-    - name: Use Node.js ${{ matrix.node_version }}
+      - name: Use Node.js ${{ matrix.node_version }}
         uses: actions/setup-node@v1
         with:
-        node-version: ${{ matrix.node_version }}
+          node-version: ${{ matrix.node_version }}
 
-    - name: Configuration environment
+      - name: Configuration environment
         env:
-        HEXO_DEPLOY_API: ${{secrets.HEXO_DEPLOY_API}}
+          HEXO_DEPLOY_API: ${{secrets.HEXO_DEPLOY_API}}
         run: |
-        sudo timedatectl set-timezone "Asia/Shanghai"
-        mkdir -p ~/.ssh/
-        echo "$HEXO_DEPLOY_PRI" > ~/.ssh/id_rsa
-        chmod 600 ~/.ssh/id_rsa
-        ssh-keyscan github.com >> ~/.ssh/known_hosts
-        git config --global user.name $GIT_USER
-        git config --global user.email $GIT_EMAIL
+          sudo timedatectl set-timezone "Asia/Shanghai"
+          mkdir -p ~/.ssh/
+          echo "$HEXO_DEPLOY_PRI" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
+          git config --global user.name $GIT_USER
+          git config --global user.email $GIT_EMAIL
+          cp _config.butterfly.yml themes/butterfly/_config.yml
 
-
-    - name: Install dependencies and theme
+      - name: Install dependencies
         run: |
-        npm install
-        npm install --save ${{ env.THEME_NAME }}
+          npm install
 
-    - name: Deploy hexo
+      - name: Deploy hexo
         run: |
-        npm run deploy
+          npm run deploy
