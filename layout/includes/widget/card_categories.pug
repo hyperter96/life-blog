@@ -1,0 +1,41 @@
+if site.categories.length
+  if !theme.classify_fold.enable
+    .card-widget.card-categories
+        .card-content
+          .item-headline
+            i.fa.fa-folder-open
+            span= _p('aside.card_categories')
+          !=aside_categories({ limit: theme.aside.card_categories.limit === 0 ? 0 : theme.aside.card_categories.limit || 8 })
+
+  else
+    .card-widget.card-categories
+        .card-content
+          .item-headline
+            i.fa.fa-folder-open
+            span= _p('aside.card_categories')
+          ul.card-category-list
+            mixin displayCategories(parent = undefined) 
+              - site.categories.find({ parent }).sort("name").each(function(category) {
+                  - var childCount = site.categories.find({ parent: category._id }).count();              
+                  li.card-category-list-item
+                    div.card-category-list-link
+                      a.card-category-list-name(href=url_for(category.path))= category.name
+                      span.card-category-list-count= category.length
+                      if childCount > 0
+                        i.fa.fa-chevron-left(onclick="classifyclick(this)")
+                      else if theme.classify_fold.post
+                        i.fa.fa-chevron-left(onclick="classifyclick(this)")
+                    
+                  if childCount > 0
+                    ul.card-category-list.child
+                      +displayCategories(category._id)
+                  else if theme.classify_fold.post
+                    ul.card-post-list.child.card-category-list.child
+                      - site.categories.findOne({name: category.name}).posts.forEach(function(post){
+                        li.card-post-list-item.card-category-list-item
+                          div.card-post-list-link.card-category-list-link
+                            a.card-post-name(title=post.title,href=url_for(post.path))= post.title
+                      - })
+              - })
+
+            +displayCategories()
