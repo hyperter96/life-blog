@@ -356,7 +356,7 @@ canvas_ribbon:
 
 # 動態彩帶
 canvas_ribbon_piao:
-  enable: false
+  enable: true
   mobile: false # false 手機端不顯示 true 手機端顯示
 
 # canvas_nest
