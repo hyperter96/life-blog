@@ -102,7 +102,17 @@ theme: butterfly
 # Deployment
 ## Docs: https://hexo.io/docs/one-command-deployment
 deploy:
-  type: ''
+  type: git
+  repo: git@github.com:hyperter96/hyperter96.github.io.git
+  branch: main
+  token: ''
+  message: "update deployment"
+  name: hyperter96
+  email: hyperter96@gmail.com
+  extend_dirs: /
+  ignore_hidden: false # default is true
+  ignore_pattern:
+    public: .
 
 # offline config passed to sw-precache.
 service_worker:
