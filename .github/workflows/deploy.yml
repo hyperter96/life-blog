@@ -44,14 +44,13 @@ jobs:
           ssh-keyscan github.com >> ~/.ssh/known_hosts
           git config --global user.name $GIT_USER
           git config --global user.email $GIT_EMAIL
+          cp _config.butterfly.yml themes/Butterfly/_config.yml
 
       - name: install dependencies
         run: |
           export TZ='Asia/Shanghai'
           npm install hexo-cli -g
-          npm init
-          npm i hyperter.github.io.source --save
-          npm i --save
+          npm i
 
       - name: Deploy hexo
         run: |
