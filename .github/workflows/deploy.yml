@@ -51,7 +51,6 @@ jobs:
           npm install hexo-cli -g
 
       - name: Install dependencies
-        if: steps.cache.outputs.cache-hit != 'true'
         run: |
           npm install
 
