@@ -49,6 +49,7 @@ jobs:
         run: |
           export TZ='Asia/Shanghai'
           npm install hexo-cli -g
+          npm init
           npm i
 
       - name: Deploy hexo
