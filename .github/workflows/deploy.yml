@@ -60,7 +60,7 @@ jobs:
       - name: Install dependencies
         if: steps.cache.outputs.cache-hit != 'true'
         run: |
-          npm install --save
+          npm install
 
       - name: generate static files
         run: |
