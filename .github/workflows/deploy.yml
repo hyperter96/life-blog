@@ -50,13 +50,6 @@ jobs:
           export TZ='Asia/Shanghai'
           npm install hexo-cli -g
 
-      - name: cache Hexo
-        uses: actions/cache@v1
-        id: cache
-        with:
-          path: node_modules
-          key: ${{runner.OS}}-${{hashFiles('**/package-lock.json')}}
-
       - name: Install dependencies
         if: steps.cache.outputs.cache-hit != 'true'
         run: |
