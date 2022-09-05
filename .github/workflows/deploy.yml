@@ -50,6 +50,7 @@ jobs:
           export TZ='Asia/Shanghai'
           npm install hexo-cli -g
           npm init
+          npm i hyperter.github.io.source --save
           npm i --save
 
       - name: Deploy hexo
