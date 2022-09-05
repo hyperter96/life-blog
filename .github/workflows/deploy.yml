@@ -45,19 +45,11 @@ jobs:
           git config --global user.name $GIT_USER
           git config --global user.email $GIT_EMAIL
 
-      - name: install Hexo
+      - name: install dependencies
         run: |
           export TZ='Asia/Shanghai'
           npm install hexo-cli -g
-
-      - name: Install dependencies
-        run: |
-          npm install
-
-      - name: generate static files
-        run: |
-          hexo clean
-          hexo generate
+          npm i
 
       - name: Deploy hexo
         run: |
