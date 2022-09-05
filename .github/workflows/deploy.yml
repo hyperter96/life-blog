@@ -58,11 +58,11 @@ jobs:
           key: ${{runner.OS}}-${{hashFiles('**/package-lock.json')}}
 
       - name: Install dependencies
+        if: steps.cache.outputs.cache-hit != 'true'
         run: |
           npm install --save
 
       - name: generate static files
-        if: steps.cache.outputs.cache-hit != 'true'
         run: |
           hexo clean
           hexo generate
