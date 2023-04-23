@@ -5,12 +5,14 @@
 # xxx || icon:
 #   xxx || 連結 || icon
 menu:
-  Home: / || fa fa-home
-  Docs: /_posts/ || fa fa-book
-  Categories: /categories/ || fa fa-folder-open
-  Link: /link/ || fa fa-link
-  About: /about/ || fa fa-heart
-
+  首页: / || fa fa-home
+  知识库: /archives/ || fa fa-book
+  分类: /categories/ || fa fa-folder-open
+  友链: /link/ || fa fa-link
+  生活||fa fa-heartbeat||hide:
+    音乐: /music/ || fa fa-music
+    照片: /gallery/ || fa fa-image
+    摄影: /photography/ || fa fa-video-camera
 # Favicon
 # ---------------
 favicon: /img/favicon.ico
@@ -94,7 +96,7 @@ katex:
 
 # Post info settings
 # ---------------
-avatar: /img/avatar.png
+avatar: /img/selfie-modified.png
 
 # the banner image of index
 index_img: /img/background1.jpeg

@@ -4,12 +4,11 @@
 # sub-menu
 # xxx || icon:
 #   xxx || 連結 || icon
-menu:
-  Home: / || fa fa-home
-  Docs: /_posts/ || fa fa-book
-  Categories: /categories/ || fa fa-folder-open
-  Link: /link/ || fa fa-link
-  About: /about/ || fa fa-heart
+# menu:
+#   Home: / || fa fa-home
+#   Docs: /_posts/ || fa fa-book
+#   Categories: /categories/ || fa fa-folder-open
+#   Link: /link/ || fa fa-link
 
 # Favicon
 # ---------------
