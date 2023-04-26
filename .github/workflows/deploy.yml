@@ -23,6 +23,9 @@ jobs:
         node_version: [18.x]
 
     steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        
       - name: Checkout theme repo
         uses: actions/checkout@v2
         with:
@@ -66,7 +69,6 @@ jobs:
       - name: install dependencies
         if: steps.cache.outputs.cache-hit != 'true'
         run: |
-          npm init
           npm install
           npm install hexo-deployer-git --save
           npm install hexo-generator-searchdb --save
