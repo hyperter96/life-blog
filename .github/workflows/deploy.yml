@@ -52,11 +52,13 @@ jobs:
         path: node_modules
         key: ${{runner.OS}}-${{hashFiles('**/package-lock.json')}}
 
+      - name: npm init
+        run: npm init -y
+
 
       - name: install dependencies
         if: steps.cache.outputs.cache-hit != 'true'
         run: |
-          ls
           npm install --save
 
       - name: Deploy hexo
