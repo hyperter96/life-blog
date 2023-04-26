@@ -25,7 +25,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-        
+
       - name: Checkout theme repo
         uses: actions/checkout@v2
         with:
@@ -47,12 +47,11 @@ jobs:
 
       - name: Configuration environment
         env:
-          HEXO_DEPLOY_API: ${{secrets.HEXO_DEPLOY_API}}
-          HEXO_DEPLOY_SECRET: ${{secrets.HEXO_DEPLOY_SECRET}}
+          HEXO_DEPLOY_PRI: ${{secrets.HEXO_DEPLOY_PRI}}
         run: |
           sudo timedatectl set-timezone "Asia/Shanghai"
           mkdir -p ~/.ssh/
-          echo "$HEXO_DEPLOY_API" > ~/.ssh/id_rsa
+          echo "$HEXO_DEPLOY_PRI" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan github.com >> ~/.ssh/known_hosts
           git config --global user.name $GIT_USER
