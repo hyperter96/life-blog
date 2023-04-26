@@ -18,7 +18,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        node_version: [18.x]
+        node_version: [12.x]
 
     steps:
       - name: Checkout deploy repo
@@ -44,6 +44,7 @@ jobs:
           ssh-keyscan github.com >> ~/.ssh/known_hosts
           git config --global user.name $GIT_USER
           git config --global user.email $GIT_EMAIL
+          cp _config.butterfly.yml themes/Butterfly/_config.yml
 
       - name: Cache
       uses: actions/cache@v1
@@ -51,9 +52,6 @@ jobs:
       with:
         path: node_modules
         key: ${{runner.OS}}-${{hashFiles('**/package-lock.json')}}
-
-      - name: npm init
-        run: npm init -y
 
 
       - name: install dependencies
