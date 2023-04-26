@@ -66,6 +66,7 @@ jobs:
       - name: install dependencies
         if: steps.cache.outputs.cache-hit != 'true'
         run: |
+          npm init
           npm install
           npm install hexo-deployer-git --save
           npm install hexo-generator-searchdb --save
