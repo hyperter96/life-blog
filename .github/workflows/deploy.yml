@@ -46,10 +46,9 @@ jobs:
           git config --global user.email $GIT_EMAIL
 
       - name: install dependencies
+        if: steps.cache.outputs.cache-hit != 'true'
         run: |
-          export TZ='Asia/Shanghai'
-          npm install hexo-cli -g
-          npm i
+          npm install --save
 
       - name: Deploy hexo
         run: |
