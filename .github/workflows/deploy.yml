@@ -59,6 +59,7 @@ jobs:
       - name: install dependencies
         if: steps.cache.outputs.cache-hit != 'true'
         run: |
+          ls -la
           npm install --save
 
       - name: Deploy hexo
