@@ -8,6 +8,8 @@ on:
 env:
   GIT_USER: hyperter96
   GIT_EMAIL: hyperter96@gmail.com
+  THEME_REPO: jerryc127/hexo-theme-butterfly
+  THEME_BRANCH: master
   DEPLOY_REPO: hyperter96/hyperter96.github.io
   DEPLOY_BRANCH: main
 
@@ -21,6 +23,13 @@ jobs:
         node_version: [18.x]
 
     steps:
+      - name: Checkout theme repo
+        uses: actions/checkout@v2
+        with:
+          repository: ${{ env.THEME_REPO }}
+          ref: ${{ env.THEME_BRANCH }}
+          path: themes/Butterfly
+
       - name: Checkout deploy repo
         uses: actions/checkout@v2
         with:
