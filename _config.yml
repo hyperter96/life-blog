@@ -105,14 +105,14 @@ deploy:
   type: git
   repo: https://github.com/hyperter96/hyperter96.github.io
   branch: main
-  token: ''
-  message: "update deployment"
-  name: hyperter96
-  email: hyperter96@gmail.com
-  extend_dirs: /
-  ignore_hidden: false # default is true
-  ignore_pattern:
-    public: .
+  # token: ''
+  # message: "update deployment"
+  # name: hyperter96
+  # email: hyperter96@gmail.com
+  # extend_dirs: /
+  # ignore_hidden: false # default is true
+  # ignore_pattern:
+  #   public: .
 
 # offline config passed to sw-precache.
 service_worker:
