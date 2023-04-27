@@ -75,7 +75,7 @@ jobs:
       - name: Build
         run: |
           npm run build
-
+ 
       - name: Deploy hexo
         run: |
           npm run deploy
