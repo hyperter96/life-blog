@@ -53,7 +53,7 @@ jobs:
           mkdir -p ~/.ssh/
           echo "$HEXO_DEPLOY_API" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan github.com/hyperter96 >> ~/.ssh/known_hosts
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
           git config --global user.name $GIT_USER
           git config --global user.email $GIT_EMAIL
 
@@ -71,6 +71,10 @@ jobs:
           npm install
           npm install hexo-deployer-git --save
           npm install hexo-generator-searchdb --save
+
+      - name: Build
+        run: |
+          npm run build
 
       - name: Deploy hexo
         run: |
