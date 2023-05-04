@@ -5,11 +5,11 @@
 # Site
 title: 皮特ᴾᵗの个人博客
 subtitle: ''
-description: '一位热爱技术、偶尔矫情的程序猿，对生活充满着期望'
-keywords:
+description: '一位热爱技术、偶尔碎碎念的程序猿，对生活充满着期望'
+keywords: ''
 author: 皮特ᴾᵗ
 language: zh-CN
-timezone: ''
+timezone: 'Asia/Shanghai'
 
 # URL
 ## Set your site url here. For example, if you use GitHub Page, set url as 'https://username.github.io/project'
@@ -40,7 +40,7 @@ external_link:
   exclude: ''
 filename_case: 0
 render_drafts: false
-post_asset_folder: false
+post_asset_folder: true
 relative_link: false
 future: true
 highlight:
@@ -105,14 +105,14 @@ deploy:
   type: git
   repo: https://github.com/hyperter96/hyperter96.github.io
   branch: main
-  # token: ''
-  # message: "update deployment"
-  # name: hyperter96
-  # email: hyperter96@gmail.com
-  # extend_dirs: /
-  # ignore_hidden: false # default is true
-  # ignore_pattern:
-  #   public: .
+  token: ''
+  message: "update deployment"
+  name: hyperter96
+  email: hyperter96@gmail.com
+  extend_dirs: /
+  ignore_hidden: false # default is true
+  ignore_pattern:
+    public: .
 
 # offline config passed to sw-precache.
 service_worker:

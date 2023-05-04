@@ -102,7 +102,7 @@ index_img: https://cdn.jsdelivr.net/gh/jerryc127/butterfly_cdn@2.1.0/top_img/ind
 default_top_img: https://cdn.jsdelivr.net/gh/jerryc127/butterfly_cdn@2.1.0/top_img/index.jpg
 
 # the default cover of the post
-default_cover: https://cdn.jsdelivr.net/gh/jerryc127/butterfly_cdn@2.1.0/top_img/default.png
+default_cover: https://cdn.jsdelivr.net/gh/hyperter96/hyperter96.github.io/img/lighthouse.jpg
 
 # the banner image of archive page
 archive_img: https://cdn.jsdelivr.net/gh/jerryc127/butterfly_cdn@2.1.0/top_img/archive.jpg
@@ -438,18 +438,29 @@ hr:
 # 打字效果
 subtitle:
   enable: true
+  # Typewriter Effect (打字效果)
+  effect: true
+  # loop (循環打字)
+  loop: true
   # source調用第三方服務
   # source: false 關閉調用
-  # source: 1  調用金山詞霸的每日一句（簡體）
-  # source: 2  調用一言网的一句話（簡體） #https://hitokoto.cn/
-  # source: 3  調用一句网（簡體） http://yijuzhan.com/
+  # source: 1  調用搏天api的隨機語錄（簡體） https://api.btstu.cn/
+  # source: 2  調用一言網的一句話（簡體） https://hitokoto.cn/
+  # source: 3  調用一句網（簡體） http://yijuzhan.com/
   # source: 4  調用今日詩詞（簡體） https://www.jinrishici.com/
-  # subtitle 會先顯示 source , 再顯示 sub 的内容
+  # subtitle 會先顯示 source , 再顯示 sub 的內容
   source: false
-  # (如果有英文逗號' , '，請使用轉義字符 &#44;)
-  sub:
-    - 今日事&#44;今日畢
+  # 如果有英文逗號' , ',請使用轉義字元 &#44;
+  # 如果有英文雙引號' " ',請使用轉義字元 &quot;
+  # 開頭不允許轉義字元，如需要，請把整個句子用雙引號包住
+  # 如果關閉打字效果，subtitle只會顯示sub的第一行文字
+  sub: 
+    - 今日事&#44;今日毕
     - Never put off till tomorrow what you can do today
+    - 折腾就是快乐
+    - Suffering is happiness
+    - 人之忌&#44;在好为人师
+    - The taboo of a person is liking to be others teacher
 
 ####    側邊欄    ####
 #-------------------------------------
@@ -592,10 +603,14 @@ CDN_USE:
   css:
     - /css/index.css
     - https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css
+    - https://cdn.jsdelivr.net/npm/js-heo@1.0.11/mainColor/heoMainColor.css
+    - https://cdn.jsdelivr.net/npm/js-heo@1.0.11/categoryBar/categoryBar.css
     # - https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css #fontawesomeV5_css
 
   js:
     - https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js #/js/third-party/jquery.min.js
+    - https://cdn.jsdelivr.net/gh/hyperter96/hyperter96.github.io/js/categoryBar.js
+    - https://cdn.jsdelivr.net/gh/hyperter96/hyperter96.github.io/js/tagsBar.js
     - /js/utils.js
     - /js/main.js
 
@@ -633,7 +648,7 @@ CDN:
   lazyload: https://cdn.jsdelivr.net/npm/lazysizes@latest/lazysizes.min.js
   instantpage: https://cdn.jsdelivr.net/npm/instant.page@latest/instantpage.min.js
 
-  typed: https://cdn.jsdelivr.net/npm/typed.js
+  typed: https://unpkg.com/typed.js@2.0.15/dist/typed.umd.js
   js_cookies: https://cdn.jsdelivr.net/npm/js-cookie/dist/js.cookie.min.js
 
   fancybox_css: https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css
