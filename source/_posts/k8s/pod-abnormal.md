@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "基于真实场景解读K8S_Pod的各种异常"
-cover: https://cdn.jsdelivr.net/gh/hyperter96/hyperter96.github.io/img/k8s.jpg
+cover: https://cdn.jsdelivr.net/gh/hyperter96/hyperter96.github.io/img/k8s-2.jpg
 categories: "k8s"
 date: 2023-05-06 11:45:56
 tags: ['k8s']
