@@ -7,7 +7,7 @@ date: 2023-05-06 11:45:56
 tags: ['k8s']
 ---
 
-# 1. Pod 生命周期
+# Pod 生命周期
 
 在整个生命周期中，Pod 会出现 5 种阶段（Phase）。
 
@@ -20,5 +20,5 @@ tags: ['k8s']
 
 容器也有其生命周期状态（State）：Waiting、Running 和 Terminated。并且也有其对应的状态原因（Reason），例如 ContainerCreating、Error、OOMKilled、CrashLoopBackOff、Completed 等。而对于发生过重启或终止的容器，上一个状态（LastState）字段不仅包含状态原因，还包含上一次退出的状态码（Exit Code）。例如容器上一次退出状态码是 137，状态原因是 OOMKilled，说明容器是因为 OOM 被系统强行终止。在异常诊断过程中，容器的退出状态是至关重要的信息。
 
-# 2. Pod 异常场景
+# Pod 异常场景
 
