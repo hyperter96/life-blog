@@ -73,6 +73,18 @@ local_search:
     input_placeholder: Search for Posts
     hits_empty: "We didn't find any results for the search: ${query}" # if there are no result
 
+charts:
+  enable: true
+  postsChart:
+    title: 文章发佈统计
+    interval: 1
+  tagsChart:
+    title: Top 10 tags
+    interval: 1
+  postsCalendar_Title: 文章发佈日历
+  categoriesChart_Title: 分类统计
+  categoriesRadar_Title: 分类雷达
+
 # MathJax
 # Please see doc for more details: https://jerryc.me/posts/21cfbf15/#MathJax
 # ---------------
@@ -285,10 +297,10 @@ reward:
   enable: true
   QR_code:
     - itemlist:
-        img: /img/wechat.jpg
+        img: /img/wechat2.jpg
         text: 微信
     - itemlist:
-        img: /img/alipay.jpg
+        img: /img/alipay2.jpg
         text: 支付寶
 
 # 推薦文章
