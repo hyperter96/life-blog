@@ -10,6 +10,7 @@ menu:
     归档: /archives/ || fa fa-book
     标签: /tags/ || fa fa-tags
     分类: /categories/ || fa fa-folder-open
+    随机: /random/ || fa fa-question
   生活||fa fa-heartbeat||hide:
     音乐: /music/ || fa fa-music
     照片: /gallery/ || fa fa-image
