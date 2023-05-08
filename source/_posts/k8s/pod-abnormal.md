@@ -20,5 +20,21 @@ tags: ['k8s']
 
 容器也有其生命周期状态（State）：Waiting、Running 和 Terminated。并且也有其对应的状态原因（Reason），例如 ContainerCreating、Error、OOMKilled、CrashLoopBackOff、Completed 等。而对于发生过重启或终止的容器，上一个状态（LastState）字段不仅包含状态原因，还包含上一次退出的状态码（Exit Code）。例如容器上一次退出状态码是 137，状态原因是 OOMKilled，说明容器是因为 OOM 被系统强行终止。在异常诊断过程中，容器的退出状态是至关重要的信息。
 
+除了必要的集群和应用监控，一般还需要通过 kubectl 命令搜集异常状态信息。
+
+```bash
+// 获取Pod当前对象描述文件
+kubectl get po <podName> -n <namespace> -o yaml
+
+// 获取Pod信息和事件（Events）
+kubectl describe pod <podName> -n <namespace>
+
+// 获取Pod容器日志
+kubectl logs <podName> <containerName> -n <namespace>
+
+// 在容器中执行命令
+kubectl exec <podName> -n <namespace> -c <containerName> -- <CMD> <ARGS>
+```
+
 # Pod 异常场景
 
