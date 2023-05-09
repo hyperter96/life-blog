@@ -38,3 +38,13 @@ kubectl exec <podName> -n <namespace> -c <containerName> -- <CMD> <ARGS>
 
 # Pod 异常场景
 
+Pod 在其生命周期的许多时间点可能发生不同的异常，按照 Pod 容器是否运行为标志点，我们将异常场景大致分为两类：
+
+1. 在 Pod 进行调度并创建容器过程中发生异常，此时 Pod 将卡在 Pending 阶段。
+2. Pod 容器运行中发生异常，此时 Pod 按照具体场景处在不同阶段。
+
+## 1. 调度失败
+
+{% note danger flat %}
+primary 提示块标签
+{% endnote %}
