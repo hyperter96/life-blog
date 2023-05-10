@@ -382,7 +382,7 @@ canvas_ribbon:
 
 # 動態彩帶
 canvas_ribbon_piao:
-  enable: true
+  enable: false
   mobile: false # false 手機端不顯示 true 手機端顯示
 
 # canvas_nest
@@ -435,11 +435,11 @@ avatar_effect: false
 # 網站顯示模式
 # light 默認模式
 # dark 黑暗模式（不建議）
-display_mode: dark
+display_mode: light
 
 # 美化post頁顯示
 post_beautify:
-  enable: false
+  enable: true
   title-prefix-icon: '\f0c1'
   title-prefix-icon-color: "#F47466"
 
