@@ -22,8 +22,3 @@ if is_home()
 else
   nav#nav.not_index_bg(style=bg_img)
     #page_site-info
-      #site-title
-          if (is_archive()) 
-            span.blogtitle= _p('archives')
-          else
-            span.blogtitle= page.title || page.tag || page.category || config.title
