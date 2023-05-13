@@ -52,6 +52,6 @@ Pod 在其生命周期的许多时间点可能发生不同的异常，按照 Pod
 
 ## 1. 调度失败
 
-{% note danger flat %}
+{% note primary flat %}
 常见错误状态：Unschedulable
 {% endnote %}

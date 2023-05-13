@@ -630,6 +630,7 @@ Open_Graph_meta: true
 CDN_USE:
   css:
     - /css/index.css
+    - https://cdn.jsdelivr.net/gh/hyperter96/hyperter96.github.io/css/custom.css
     - https://cdn.jsdelivr.net/gh/hyperter96/hyperter96.github.io/css/modify.css
     - https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css
     # - https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css #fontawesomeV5_css
