@@ -132,7 +132,7 @@ default_top_img:
 default_cover: https://cdn.jsdelivr.net/gh/hyperter96/hyperter96.github.io/img/lighthouse.jpg
 
 # the banner image of archive page
-archive_img: https://cdn.jsdelivr.net/gh/jerryc127/butterfly_cdn@2.1.0/top_img/archive.jpg
+archive_img:
 
 # the banner image of tag page
 tag_img:
