@@ -12,9 +12,9 @@ menu:
     分类: /categories/ || fa fa-folder-open
     随机: /random.html || fa fa-random
   生活||fa fa-heartbeat||hide:
-    音乐: /music/ || fa fa-music
-    照片: /gallery/ || fa fa-image
-    摄影: /photography/ || fa fa-video-camera
+    音乐: /categories/music/ || fa fa-music
+    照片: /categories/照片/ || fa fa-image
+    摄影: /categories/摄影/ || fa fa-video-camera
   更多||fa fa-coffee:
     留言: /comments/ || fa fa-comments
     友链: /link/ || fa fa-handshake-o
