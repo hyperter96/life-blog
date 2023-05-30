@@ -86,3 +86,80 @@ Flannel致力于给k8s集群中的nodes提供一个3层网络，他并不控制n
 ## Kube-ovn
 
 ## CNI是怎么工作的
+
+CNI的接口并不是指HTTP，gRPC接口，CNI接口是指对可执行程序的调用（exec)。这些可执行程序称之为CNI插件，以K8S为例，K8S节点默认的CNI插件路径为 `/opt/cni/bin` ，在K8S节点上查看该目录，可以看到可供使用的CNI插件：
+
+```bash
+$ ls /opt/cni/bin/
+bandwidth  bridge  dhcp  firewall  flannel  host-device  host-local  ipvlan  loopback  macvlan  portmap  ptp  sbr  static  tuning  vlan
+```
+
+CNI的工作过程大致如下图所示：
+
+![](https://cdn.jsdelivr.net/gh/hyperter96/hyperter96.github.io/img/cni-workflow.png)
+
+CNI通过JSON格式的配置文件来描述网络配置，当需要设置容器网络时，由容器运行时负责执行CNI插件，并通过CNI插件的标准输入（stdin）来传递配置文件信息，通过标准输出（stdout）接收插件的执行结果。图中的 `libcni` 是CNI提供的一个go package，封装了一些符合CNI规范的标准操作，便于容器运行时和网络插件对接CNI标准。
+
+### 插件入参
+
+容器运行时通过设置**环境变量**以及从**标准输入**传入的配置文件来向插件传递参数。
+
+#### 环境变量
+
+* `CNI_COMMAND`：定义期望的操作，可以是`ADD，DEL，CHECK`或`VERSION`。
+* `CNI_CONTAINERID`：容器ID，由容器运行时管理的容器唯一标识符。
+* `CNI_NETNS`：容器网络命名空间的路径。（形如 `/run/netns/[nsname]`)。
+* `CNI_IFNAME`：需要被创建的网络接口名称，例如`eth0`。
+* `CNI_ARGS`：运行时调用时传入的额外参数，格式为分号分隔的key-value对，例如 `FOO=BAR;ABC=123`
+* `CNI_PATH`: CNI插件可执行文件的路径，例如`/opt/cni/bin`。
+
+#### 配置文件
+
+文件示例：
+
+```json
+{
+  "cniVersion": "0.4.0", // 表示希望插件遵循的CNI标准的版本。
+  "name": "dbnet",  // 表示网络名称。这个名称并非指网络接口名称，是便于CNI管理的一个表示。应当在当前主机(或其他管理域)上全局唯一。
+  "type": "bridge", // 插件类型
+  "bridge": "cni0", // bridge插件的参数，指定网桥名称。
+  "ipam": { // IP Allocation Management，管理IP地址分配。
+    "type": "host-local", // ipam插件的类型。
+    // ipam 定义的参数
+    "subnet": "10.1.0.0/16",
+    "gateway": "10.1.0.1"
+  }
+}
+```
+
+#### 公共定义部分
+
+配置文件分为公共部分和插件定义部分。公共部分在CNI项目中使用结构体`NetworkConfig`定义：
+
+```go
+type NetworkConfig struct {
+   Network *types.NetConf
+   Bytes   []byte
+}
+...
+// NetConf describes a network.
+type NetConf struct {
+   CNIVersion string `json:"cniVersion,omitempty"`
+
+   Name         string          `json:"name,omitempty"`
+   Type         string          `json:"type,omitempty"`
+   Capabilities map[string]bool `json:"capabilities,omitempty"`
+   IPAM         IPAM            `json:"ipam,omitempty"`
+   DNS          DNS             `json:"dns"`
+
+   RawPrevResult map[string]interface{} `json:"prevResult,omitempty"`
+   PrevResult    Result                 `json:"-"`
+}
+```
+
+* `cniVersion` 表示希望插件遵循的CNI标准的版本。
+* `name` 表示网络名称。这个名称并非指网络接口名称，是便于CNI管理的一个表示。应当在当前主机(或其他管理域)上全局唯一。
+* `type` 表示插件的名称，也就是插件对应的可执行文件的名称。
+* `bridge` 该参数属于bridge插件的参数，指定主机网桥的名称。
+* `ipam` 表示IP地址分配插件的配置，`ipam.type` 则表示`ipam`的插件类型。 更详细的信息，可以参考[官方文档](https://github.com/containernetworking/cni/blob/spec-v0.4.0/SPEC.md#network-configuration)。
+
