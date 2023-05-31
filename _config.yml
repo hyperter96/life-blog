@@ -62,7 +62,7 @@ prismjs:
 # order_by: Posts order. (Order by date descending by default)
 index_generator:
   path: ''
-  per_page: 10
+  per_page: 6
   order_by: -date
 
 # Category & Tag
@@ -85,7 +85,7 @@ updated_option: 'mtime'
 
 # Pagination
 ## Set per_page to 0 to disable pagination
-per_page: 10
+per_page: 6
 pagination_dir: page
 
 # Include / Exclude file(s)
@@ -121,3 +121,20 @@ service_worker:
   - public/**/*.{js,html,css,png,jpg,gif,svg,eot,ttf,woff,woff2}
   stripPrefix: public
   verbose: true
+
+
+algolia:
+  appId: "OBFVF4PTN2"
+  apiKey: "f677b6492066e7edbeb739a06a274240"
+  adminApiKey: "5af0b651106d03fb30afd3e256c98d00"
+  chunkSize: 5000
+  indexName: "hyperter96"
+  fields:
+    - content:strip:truncate,0,500
+    - excerpt:strip
+    - gallery
+    - permalink
+    - photos
+    - slug
+    - tags
+    - title
