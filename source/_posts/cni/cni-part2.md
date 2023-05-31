@@ -7,7 +7,7 @@ date: 2023-05-23 23:52:19
 tags: ['CNI', '网络', 'go']
 ---
 
-CNI的接口并不是指HTTP，gRPC接口，CNI接口是指对可执行程序的调用（exec)。这些可执行程序称之为CNI插件，以K8S为例，K8S节点默认的CNI插件路径为 `/opt/cni/bin` ，在K8S节点上查看该目录，可以看到可供使用的CNI插件：
+CNI的接口并不是指HTTP，gRPC接口，CNI接口是指对可执行程序的调用（`exec`)。这些可执行程序称之为CNI插件，以K8S为例，K8S节点默认的CNI插件路径为 `/opt/cni/bin` ，在K8S节点上查看该目录，可以看到可供使用的CNI插件：
 
 ```bash
 $ ls /opt/cni/bin/
