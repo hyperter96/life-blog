@@ -55,8 +55,8 @@ hexo.extend.helper.register('related_posts', function (currentPost, allPosts) {
     for (var i = 0; i < Math.min(relatedPosts.length, limit_num); i++) {
 
       var cover = relatedPosts[i].cover
-
-      result += '<div class="relatedPosts_item"><a href="' + hexoConfig.root + relatedPosts[i].path + '" title="' + relatedPosts[i].title + '">';
+      const title = this.escape_html(relatedPosts[i].title)
+      result += `<div class="relatedPosts_item"><a href="${this.url_for(relatedPosts[i].path)}" title="${title}">`;
       result += '<img class="relatedPosts_cover ' + lazy_class + '"' + lazy_src + '="' + cover + '">';
       if (date_type == 'created') {
         result += '<div class="relatedPosts_main is-center"><div class="relatedPosts_date"><i class="fa fa-calendar fa-fw" aria-hidden="true"></i>' + ' ' + date(relatedPosts[i].created) + '</div>'
