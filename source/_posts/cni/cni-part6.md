@@ -3,7 +3,7 @@ layout: post
 title: "CNI part6: VPC-CNI方案实现k8s集群内外互通"
 cover: https://cdn.jsdelivr.net/gh/hyperter96/hyperter96.github.io/img/cni-part6.jpeg
 categories: "CNI"
-date: 2023-05-26 23:52:19
+date: 2023-05-28 23:52:19
 tags: ['CNI', '网络', 'go']
 ---
 
