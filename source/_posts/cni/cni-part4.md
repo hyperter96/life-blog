@@ -29,7 +29,7 @@ func cmdDel(args *skel.CmdArgs) error {
 
 ## cnitool
 
-社区提供了一个工具 cnitool，是模拟 CNI 接口被调用的工具，可以在一个已存在的 network namespace 中增加或删除网络设备。 先来看下 cnitool 的执行逻辑：
+社区提供了一个工具 `cnitool`，是模拟 CNI 接口被调用的工具，可以在一个已存在的 `network namespace` 中增加或删除网络设备。 先来看下 `cnitool` 的执行逻辑：
 
 ```go
 func main() {
@@ -129,8 +129,8 @@ func (e *RawExec) ExecPlugin(ctx context.Context, pluginPath string, stdinData [
 }
 ```
 
-看到这里，我们也就看到了整个 CNI 的核心逻辑，出乎意料的简单，仅仅是 exec 了插件的可执行文件，发生错误的时候重试 5 次。
+看到这里，我们也就看到了整个 CNI 的核心逻辑，出乎意料的简单，仅仅是 `exec` 了插件的可执行文件，发生错误的时候重试 5 次。
 
 至此，整个 CNI 的执行流程已经非常清晰了，简而言之，一个 CNI 插件就是一个可执行文件，从配置文件中获取网络的配置信息，从容器运行时获取容器的信息，前者以标准输入的形式，后者以环境变量的形式传给各个插件，最终以配置文件中定义的顺序依次调用各个插件，并且将前一个插件的执行结果包含在配置信息中传给下一个插件。
 
-尽管如此，我们目前熟悉的成熟的网络插件的方案（如 calico），通常都不是依次调用 Plugin，而是只调用 main 插件，在 main 插件中调用 ipam 插件，并当场获取执行结果。
+尽管如此，我们目前熟悉的成熟的网络插件的方案（如 `calico`），通常都不是依次调用 Plugin，而是只调用 `main` 插件，在 `main` 插件中调用 `ipam` 插件，并当场获取执行结果。

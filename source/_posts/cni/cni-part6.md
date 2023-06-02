@@ -10,13 +10,13 @@ tags: ['CNI', '网络', 'go']
 ## VPC-CNI方案背景
 
 之前的文章分析过flannel网络模型，诚然，Flannel解决了k8s集群中容器间网络互通的问题，但对于如何解决集群内容器与集群外的虚拟机或者物理机直接互通的问题却无能为力。
-其实，更确切说法是集群外服务无法直接ping通集群内容器ip。那么就意味着，在类似dubbo这种微服务发现和注册场景中，在网络层，k8s集群外的consumer是无法直接连通集群内的provider的
+其实，更确切说法是集群外服务无法直接ping通集群内容器ip。那么就意味着，在类似`dubbo`这种微服务发现和注册场景中，在网络层，k8s集群外的consumer是无法直接连通集群内的provider的
 
 {% note primary flat %}
 可能有人不禁要问，flannel为什么对于这种场景无能为力？
 {% endnote %}
 
-这是因为，k8s集群中容器的ip是由flanneld"另起炉灶"独立生成的，并不在vpc网段的范围内，导致集群外的服务器上的路由表缺失相应的路由条目将数据包转发到容器内。
+这是因为，k8s集群中容器的ip是由`flanneld`"另起炉灶"独立生成的，并不在vpc网段的范围内，导致集群外的服务器上的路由表缺失相应的路由条目将数据包转发到容器内。
 聪明如你，马上想到"既然如此，那让容器分配的ip在vpc网段内，不就可以了吗?"
 
 恭喜你，答对了！！！
@@ -146,11 +146,12 @@ Worker节点启动的时候挂载多个虚拟网卡ENI(`Elastic Netowrk Interfac
 			IP:   deletedPodIP,
 			Mask: net.IPv4Mask(255, 255, 255, 255),
 		}
-		...
-            // 调用driver模块的TearDownNS接口删除清理pod网络栈
-			err = driverClient.TeardownNS(addr, int(r.DeviceNumber), log)
-        ...
-	return nil
+		... 
+		// 调用driver模块的TearDownNS接口删除清理pod网络栈
+		err = driverClient.TeardownNS(addr, int(r.DeviceNumber), log)
+          ...
+	      return nil
+	}
   }
   
   ```
@@ -185,13 +186,15 @@ Worker节点启动的时候挂载多个虚拟网卡ENI(`Elastic Netowrk Interfac
         ...
         addrHostAddr := &net.IPNet{
             IP:   addr.IP,
-            Mask: net.CIDRMask(32, 32)}
+            Mask: net.CIDRMask(32, 32),
+		}
 
         // 在节点上的主路由表添加到pod的路由 ip route add $ip dev veth-1 
         route := netlink.Route{
             LinkIndex: hostVeth.Attrs().Index,
             Scope:     netlink.SCOPE_LINK,
-            Dst:       addrHostAddr}
+            Dst:       addrHostAddr,
+		}
    
         // netlink接口封装了linux的 "ip link"、"ip route"、 "ip rule"等命令
         if err := netLink.RouteReplace(&route); err != nil {
@@ -241,24 +244,24 @@ Worker节点启动的时候挂载多个虚拟网卡ENI(`Elastic Netowrk Interfac
         }
   }
 
-    func (createVethContext *createVethPairContext) run(hostNS ns.NetNS) error {
+  func (createVethContext *createVethPairContext) run(hostNS ns.NetNS) error {
     veth := &netlink.Veth{
-    LinkAttrs: netlink.LinkAttrs{
-    Name:  createVethContext.contVethName,
-    Flags: net.FlagUp,
-    MTU:   createVethContext.mtu,
-    },
-    PeerName: createVethContext.hostVethName,
-    }
+            LinkAttrs: netlink.LinkAttrs{
+                Name:  createVethContext.contVethName,
+                Flags: net.FlagUp,
+                MTU:   createVethContext.mtu,
+            },
+            PeerName: createVethContext.hostVethName,
+        }
 
-        // 执行 ip link add 为pod创建vethpair
+	// 执行 ip link add 为pod创建vethpair
     if err := createVethContext.netLink.LinkAdd(veth); err != nil {
         return err
     }
 
     hostVeth, err := createVethContext.netLink.LinkByName(createVethContext.hostVethName)
     ...
-        // 执行 ip link set $link up 启用vethpair的主机端
+	// 执行 ip link set $link up 启用vethpair的主机端
     if err = createVethContext.netLink.LinkSetUp(hostVeth); err != nil {
         return errors.Wrapf(err, "setup NS network: failed to set link %q up", createVethContext.hostVethName)
     }
@@ -273,20 +276,21 @@ Worker节点启动的时候挂载多个虚拟网卡ENI(`Elastic Netowrk Interfac
         return errors.Wrapf(err, "setup NS network: failed to set link %q up", createVethContext.contVethName)
     }
 
-        // 添加默认网关169.254.1.1   route add default gw addr
+	// 添加默认网关169.254.1.1   route add default gw addr
     if err = createVethContext.netLink.RouteReplace(&netlink.Route{
         LinkIndex: contVeth.Attrs().Index,
         Scope:     netlink.SCOPE_LINK,
-        Dst:       gwNet}); err != nil {
+        Dst:       gwNet,
+	}); err != nil {
         return errors.Wrap(err, "setup NS network: failed to add default gateway")
     }
 
-        // 添加默认路由 效果 default via 169.254.1.1 dev eth0
+	// 添加默认路由 效果 default via 169.254.1.1 dev eth0
     if err = createVethContext.ip.AddDefaultRoute(gwNet.IP, contVeth); err != nil {
         return errors.Wrap(err, "setup NS network: failed to add default route")
     }
     
-        // 给网卡eth0添加ip地址 "ip addr add $ip dev eth0"
+	// 给网卡eth0添加ip地址 "ip addr add $ip dev eth0"
     if err = createVethContext.netLink.AddrAdd(contVeth, &netlink.Addr{IPNet: createVethContext.addr}); err != nil {
         return errors.Wrapf(err, "setup NS network: failed to add IP addr to %q", createVethContext.contVethName)
     }
@@ -303,7 +307,7 @@ Worker节点启动的时候挂载多个虚拟网卡ENI(`Elastic Netowrk Interfac
         return errors.Wrap(err, "setup NS network: failed to add static ARP")
     }
     
-        // 将vethpair 的一端移动到主机侧 network namespace 
+	// 将vethpair 的一端移动到主机侧 network namespace 
     if err = createVethContext.netLink.LinkSetNsFd(hostVeth, int(hostNS.Fd())); err != nil {
         return errors.Wrap(err, "setup NS network: failed to move veth to host netns")
     }
@@ -322,23 +326,24 @@ Worker节点启动的时候挂载多个虚拟网卡ENI(`Elastic Netowrk Interfac
   }
 
   func tearDownNS(addr *net.IPNet, deviceNumber int, netLink netlinkwrapper.NetLink, log logger.Logger) error {
-  ...
-  // 删除to-pod方向的策略路由 执行 "ip rule del"
-  toContainerRule := netLink.NewRule()
-  toContainerRule.Dst = addr
-  toContainerRule.Priority = toContainerRulePriority
-  err := netLink.RuleDel(toContainerRule)
-  ...
-  // 判断ENI是否为Primary ENI,如果是非Primary,则同时删除from-pod的策略路由
-  if deviceNumber > 0 {
-  err := deleteRuleListBySrc(*addr)
-  ...
-  }
-  addrHostAddr := &net.IPNet{
-  IP:   addr.IP,
-  Mask: net.CIDRMask(32, 32)}
-  ...
-  return nil
+	  ...
+      // 删除to-pod方向的策略路由 执行 "ip rule del"
+      toContainerRule := netLink.NewRule()
+      toContainerRule.Dst = addr
+      toContainerRule.Priority = toContainerRulePriority
+      err := netLink.RuleDel(toContainerRule)
+      ...
+      // 判断ENI是否为Primary ENI,如果是非Primary,则同时删除from-pod的策略路由
+      if deviceNumber > 0 {
+      err := deleteRuleListBySrc(*addr)
+      ...
+      }
+      addrHostAddr := &net.IPNet{
+          IP:   addr.IP,
+          Mask: net.CIDRMask(32, 32)
+	  }
+      ...
+      return nil
   }
 
   ```

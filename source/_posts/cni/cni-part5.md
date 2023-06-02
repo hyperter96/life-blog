@@ -3,7 +3,7 @@ layout: post
 title: "CNI part5: Village Net 的工作原理"
 cover: https://cdn.jsdelivr.net/gh/hyperter96/hyperter96.github.io/img/cni-part5.jpg
 categories: "CNI"
-date: 2023-05-26 23:52:19
+date: 2023-05-27 23:52:19
 tags: ['CNI', '网络', 'go']
 ---
 

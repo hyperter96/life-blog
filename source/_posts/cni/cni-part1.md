@@ -26,7 +26,7 @@ CNI插件在k8s集群网络到底充当着什么角色呢？
 * 出向限制：对于容器集群外的数据库 / 中间件，需能控制特定属性的容器应用才可访问，拒绝其他连接请求。
 * 入向限制：限制集群外应用对特定容器应用的访问。
 * 带宽限制：容器应用之间的网络访问加以带宽限制。
-* 出口网关访问：对于访问集群外特定应用的容器，设置出口网关对其进行 SNAT 以达到统一出口访问的审计和安全需求。 理完需求和应用场景，我们来看看如何通过不同的 CNI 插件解决以上痛点。
+* 出口网关访问：对于访问集群外特定应用的容器，设置出口网关对其进行 `SNAT` 以达到统一出口访问的审计和安全需求。 理完需求和应用场景，我们来看看如何通过不同的 CNI 插件解决以上痛点。
 
 ## 术语
 
@@ -56,7 +56,7 @@ CNI插件在k8s集群网络到底充当着什么角色呢？
 
 flannel是kubernetes默认提供网络插件。 Flannel 是由CoreOs团队开发社交的网络工具，CoreOS团队采用L3 Overlay模式设计flannel， 规定宿主机下各个Pod属于同一个子网，不同宿主机下的Pod属于不同的子网。
 
-**flannel会在每一个宿主机上运行名为 `flanneld` 代理，其负责为宿主机预先分配一个子网，并为Pod分配IP地址。Flannel使用Kubernetes或etcd来存储网络配置、分配的子网和主机公共IP等信息。数据包则通过`VXLAN、UDP`或`host-gw`这些类型的后端机制进行转发。
+* flannel会在每一个宿主机上运行名为 `flanneld` 代理，其负责为宿主机预先分配一个子网，并为Pod分配IP地址。Flannel使用Kubernetes或`etcd`来存储网络配置、分配的子网和主机公共IP等信息。数据包则通过`VXLAN、UDP`或`host-gw`这些类型的后端机制进行转发。
 
 Flannel致力于给k8s集群中的nodes提供一个3层网络，他并不控制node中的容器是如何进行组网的，仅仅关心流量如何在node之间流转。
 
@@ -67,13 +67,13 @@ Flannel致力于给k8s集群中的nodes提供一个3层网络，他并不控制n
 * 首先pod1通过veth对把数据包发送到docker0虚拟网桥，网桥通过查找转发表发现10.1.20.3不在自己管理的网段，就会把数据包
 转发给默认路由（这里为flannel0网桥）
 
-* flannel.0网桥是一个vxlan设备，flannel.0收到数据包后，由于自己不是目的地10.1.20.3，也要尝试将数据包重新发送出去。数据包沿着网络协议栈向下流动，在二层时需要封二层以太包，填写目的mac地址，这时一般应该发出arp：”who is 10.1.20.3″。但vxlan设备的特殊性就在于它并没有真正在二层发出这个arp包，而是由linux kernel引发一个”L3 MISS”事件并将arp请求发到用户空间的flanned程序。
+* `flannel.0`网桥是一个vxlan设备，`flannel.0`收到数据包后，由于自己不是目的地10.1.20.3，也要尝试将数据包重新发送出去。数据包沿着网络协议栈向下流动，在二层时需要封二层以太包，填写目的 `mac` 地址，这时一般应该发出arp：”who is 10.1.20.3″。但`vxlan`设备的特殊性就在于它并没有真正在二层发出这个`arp`包，而是由linux kernel引发一个”L3 MISS”事件并将arp请求发到用户空间的`flanned`程序。
 
-* flanned程序收到”L3 MISS”内核事件以及arp请求(who is 10.1.20.3)后，并不会向外网发送arp request，而是尝试从etcd查找该地址匹配的子网的vtep信息，也就是会找到node2上的flanel.0的mac地址信息，flanned将查询到的信息放入node1 host的arp cache表中，flanneel0完成这项工作后，linux kernel就可以在arp table中找到 10.1.20.3对应的mac地址并封装二层以太包了:
+* `flanned`程序收到”L3 MISS”内核事件以及`arp`请求(who is 10.1.20.3)后，并不会向外网发送 `arp request`，而是尝试从 `etcd` 查找该地址匹配的子网的`vtep`信息，也就是会找到node2上的`flannel.0`的mac地址信息，`flanned`将查询到的信息放入node1 host的`arp cache`表中，`flannel.0`完成这项工作后，linux kernel就可以在`arp table`中找到 10.1.20.3对应的`mac`地址并封装二层以太包了:
 
-* 由于是Vlanx设备，flannel0还会对上面的包进行二次封装，封装新的以太网mac帧:
+* 由于是Vlanx设备，`flannel.0`还会对上面的包进行二次封装，封装新的以太网mac帧:
 
-* node上2的eth0接收到上述vxlan包，kernel将识别出这是一个vxlan包，于是拆包后将packet转给node上2的flannel.0。flannel.0再将这个数据包转到docker0，继而由docker0传输到Pod2的某个容器里。
+* node上2的eth0接收到上述`vxlan`包，kernel将识别出这是一个`vxlan`包，于是拆包后将packet转给node上2的`flannel.0`。`flannel.0`再将这个数据包转到`docker0`，继而由`docker0`传输到 Pod2 的某个容器里。
 
 如上图，总的来说就是建立 VXLAN 隧道，通过UDP把IP封装一层直接送到对应的节点，实现了一个大的 VLAN。
 

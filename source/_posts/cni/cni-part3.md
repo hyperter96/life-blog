@@ -43,18 +43,18 @@ tags: ['CNI', '网络', 'go']
 注意，与常规的CNI插件不同，IPAM插件返回的是一个不包含`interfaces`字段的简化的`Result`结构，因为IPAM插件不应该关注它们的父插件配置的interfaces，除了那些有特殊要求的IPAM插件(例如dhcp IPAM插件)。
 
 * `ips`字段是一个由插件决定的IP配置信息列表。每个列表项都是一个dictionary，描述了一个网络接口的IP配置。多个网络接口的IP配置和单个网络接口上的多个IP配置都将以`ips`列表中的不同列表项返回
-  * `version`(string): “4”或“6”，对应列表项中IP地址的IP版本。提供的所有IP地址和网关必须符合给定的版本。
-  * `address`(string): CIDR格式的IP地址(如“192.168.1.3/24”
-  * `gateway`(string): 对应子网的默认网关(如果存在的话)。它不会要求CNI插件添加任何与该网关相关的路由。要添加的路由通过routes字段单独指定。使用该字段的一个例子是，CNI bridge插件将这个IP地址添加到Linux bridge上，将其用作网关。
-  * `interface`(uint): CNI插件结果的接口列表索引，指示该IP配置应用于哪个接口。IPAM插件不应该返回这个字段，因为它们没有关于网络接口的信息。
+  * `version`(`string`): “4”或“6”，对应列表项中IP地址的IP版本。提供的所有IP地址和网关必须符合给定的版本。
+  * `address`(`string`): CIDR格式的IP地址(如`192.168.1.3/24`)
+  * `gateway`(`string`): 对应子网的默认网关(如果存在的话)。它不会要求CNI插件添加任何与该网关相关的路由。要添加的路由通过routes字段单独指定。使用该字段的一个例子是，CNI bridge插件将这个IP地址添加到Linux bridge上，将其用作网关。
+  * `interface`(`uint`): CNI插件结果的接口列表索引，指示该IP配置应用于哪个接口。IPAM插件不应该返回这个字段，因为它们没有关于网络接口的信息。
 * `routes`字段由以下内容组成。所有的IP地址在`routes`中一定要有相同的IP版本，4或者6
-  * `dst`(string): 以CIDR描述的目标子网
-  * `gw`(string): 网关IP。如果省略，将假定一个默认网关(由CNI插件确定)
+  * `dst`(`string`): 以CIDR描述的目标子网
+  * `gw`(`string`): 网关IP。如果省略，将假定一个默认网关(由CNI插件确定)
 * `dns`包含了由一些通用的DNS信息组成的dictionary
-  * `nameservers`(list of strings, optional): 一个对配置网络可见的按优先级顺序排列的dns服务器列表，列表中的每个值是一个IPV4或IPV6的字符串
-  * `domain`(string, optional): 用于短主机名查找的本地域名
-  * `search`(list of strings, optional): 用于短主机名查找的优先级排序搜索域列表，被大多数解析器(resolver)在解析时优先于domain
-  * `options` (list of strings, optional): 一组可以传递给解析器(resolver)的选项值
+  * `nameservers`(`list of strings`, optional): 一个对配置网络可见的按优先级顺序排列的dns服务器列表，列表中的每个值是一个IPV4或IPV6的字符串
+  * `domain`(`string`, optional): 用于短主机名查找的本地域名
+  * `search`(`list of strings`, optional): 用于短主机名查找的优先级排序搜索域列表，被大多数解析器(resolver)在解析时优先于`domain`
+  * `options` (`list of strings`, optional): 一组可以传递给解析器(resolver)的选项值
 
 
 CNI项目目前提供了以下几个IPAM插件:
