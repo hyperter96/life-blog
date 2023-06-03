@@ -5,6 +5,7 @@ cover: https://cdn.jsdelivr.net/gh/hyperter96/hyperter96.github.io/img/seata-par
 categories: "分布式事务"
 date: 2023-05-31 23:52:19
 tags: ['seata', '分布式事务', 'go']
+---
 
 Seata 提供了 AT、TCC、SAGA 和 XA 四种事务模式，可以快速有效地对分布式事务进行控制。
 
