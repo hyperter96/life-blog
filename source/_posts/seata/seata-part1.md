@@ -32,3 +32,15 @@ Seata 的前身是阿里巴巴集团内大规模使用保证分布式事务一�
 * Transaction Coordinator（TC） 事务协调器，维护全局事务的运行状态，负责协调并驱动全局事务的提交或回滚。
 * Transaction Manager（TM） 控制全局事务的边界，负责开启一个全局事务，并最终发起全局提交或全局回滚的决议，TM 定义全局事务的边界。
 * Resource Manager（RM） 控制分支事务，负责分支注册、状态汇报，并接收事务协调器的指令，驱动分支（本地）事务的提交和回滚。RM 负责定义分支事务的边界和行为。
+
+以上三个组件相互协作，TC 以 Seata 服务器（Server）形式独立部署，TM 和 RM 则是以 Seata Client 的形式集成在微服务中运行，其整体工作流程如下图。
+
+![](https://cdn.jsdelivr.net/gh/hyperter96/hyperter96.github.io/img/seata-part1-figure4.png)
+
+Seata 的整体工作流程如下：
+
+* TM 向 TC 申请开启一个全局事务，全局事务创建成功后，TC 会针对这个全局事务生成一个全局唯一的 XID；
+* XID 通过服务的调用链传递到其他服务;
+* RM 向 TC 注册一个分支事务，并将其纳入 XID 对应全局事务的管辖；
+* TM 根据 TC 收集的各个分支事务的执行结果，向 TC 发起全局事务提交或回滚决议；
+* TC 调度 XID 下管辖的所有分支事务完成提交或回滚操作。
