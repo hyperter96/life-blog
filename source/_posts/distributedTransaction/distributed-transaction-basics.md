@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "分布式事务理论基础"
-cover: https://cdn.jsdelivr.net/gh/hyperter96/hyperter96.github.io/img/background1.jpg
+cover: https://cdn.jsdelivr.net/gh/hyperter96/hyperter96.github.io/img/background1.jpeg
 categories: "分布式事务"
 date: 2023-05-29 14:52:19
 tags: ['分布式事务', 'go']
