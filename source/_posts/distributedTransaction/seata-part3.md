@@ -39,7 +39,7 @@ CREATE TABLE `undo_log` (
 
 Seata 的 AT 模式工作时大致可以分为以两个阶段，下面我们就结合一个实例来对 AT 模式的工作机制进行介绍。
 
-假设某数据库中存在一张名为 webset 的表，表结构如下。
+假设某数据库中存在一张名为 `webset` 的表，表结构如下。
 
 | 列表   | 类型             | 主键  |
 |------|----------------|-----|
@@ -61,35 +61,37 @@ Seata AT 模式一阶段的工作流程如下图所示。
 
 Seata AT 模式一阶段工作流程如下。
 
-1. 获取 SQL 的基本信息：Seata 拦截并解析业务 SQL，得到 SQL 的操作类型（UPDATE）、表名（webset）、判断条件（where name = 'C语言中文网'）等相关信息。
+* 获取 SQL 的基本信息：Seata 拦截并解析业务 SQL，得到 SQL 的操作类型（UPDATE）、表名（`webset`）、判断条件（where name = 'C语言中文网'）等相关信息。
+* 查询前镜像：根据得到的业务 SQL 信息，生成“前镜像查询语句”。
 
-2. 查询前镜像：根据得到的业务 SQL 信息，生成“前镜像查询语句”。
-
-```mysql
-select id,name,url from webset where  name='C语言中文网';
-```
-
-执行“前镜像查询语句”，得到即将执行操作的数据，并将其保存为“前镜像数据（beforeImage）”。
+    ```mysql
+    select id,name,url from webset where  name='C语言中文网';
+    ```
+    
+    执行“前镜像查询语句”，得到即将执行操作的数据，并将其保存为“前镜像数据（beforeImage）”。
 
 | id  | name   | url |
 |-----|--------|-----|
-| 1   | C语言中文网 | biancheng.net |
+| 1   | C语言中文网 | `biancheng.net` |
 
-3. 执行业务 SQL（update webset set url = 'c.biancheng.net' where name = 'C语言中文网';），将这条记录的 url 修改为 c.biancheng.net。
+* 执行以下业务 SQL，将这条记录的 url 修改为 `c.biancheng.net`。
+  ```mysql
+  update webset set url = 'c.biancheng.net' where name = 'C语言中文网';
+  ```
 
-4. 查询后镜像：根据“前镜像数据”的主键（id : 1），生成“后镜像查询语句”。
+* 查询后镜像：根据“前镜像数据”的主键（`id : 1`），生成“后镜像查询语句”。
 
-```mysql
-select id,name,url from webset where  id= 1;
-```
+    ```mysql
+    select id,name,url from webset where  id= 1;
+    ```
+    
+    执行“后镜像查询语句”，得到执行业务操作后的数据，并将其保存为“后镜像数据（afterImage）”。
 
-执行“后镜像查询语句”，得到执行业务操作后的数据，并将其保存为“后镜像数据（afterImage）”。
+    | id  | name   | url             |
+    |-----|--------|-----------------|
+    | 1   | C语言中文网 | `c.biancheng.net` |
 
-| id  | name   | url             |
-|-----|--------|-----------------|
-| 1   | C语言中文网 | c.biancheng.net |
-
-5. 插入回滚日志：将前后镜像数据和业务 SQL 的信息组成一条回滚日志记录，插入到 UNDO_LOG 表中，示例回滚日志如下。
+* 插入回滚日志：将前后镜像数据和业务 SQL 的信息组成一条回滚日志记录，插入到 `UNDO_LOG` 表中，示例回滚日志如下。
 
 ```json
 {
@@ -177,15 +179,15 @@ select id,name,url from webset where  id= 1;
 }
 ```
 
-6. 注册分支事务，生成行锁：在这次业务操作的本地事务提交前，RM 会向 TC 注册分支事务，并针对主键 id 为 1 的记录生成行锁。
+* 注册分支事务，生成行锁：在这次业务操作的本地事务提交前，RM 会向 TC 注册分支事务，并针对主键 id 为 1 的记录生成行锁。
 
     {% note primary flat %}
     以上所有操作均在同一个数据库事务内完成，可以保证一阶段的操作的原子性。
     {% endnote %}
 
-7. 本地事务提交：将业务数据的更新和前面生成的 UNDO_LOG 一并提交。
+* 本地事务提交：将业务数据的更新和前面生成的 `UNDO_LOG` 一并提交。
 
-8. 上报执行结果：将本地事务提交的结果上报给 TC。
+* 上报执行结果：将本地事务提交的结果上报给 TC。
 
 ### 二阶段：提交
 
@@ -203,9 +205,9 @@ select id,name,url from webset where  id= 1;
 
 3. 生成回滚语句：根据 `UNDO_LOG` 中的前镜像（beforeImage）和业务 SQL 的相关信息生成回滚语句：
 
-```mysql
-update webset set url= 'biancheng.net' where id = 1;
-```
+    ```mysql
+    update webset set url= 'biancheng.net' where id = 1;
+    ```
 
 4. 还原数据：执行回滚语句，并将前镜像数据、后镜像数据以及行锁删除。
 
