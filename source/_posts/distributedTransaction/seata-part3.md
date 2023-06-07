@@ -61,7 +61,7 @@ Seata AT 模式一阶段的工作流程如下图所示。
 
 Seata AT 模式一阶段工作流程如下。
 
-* 获取 SQL 的基本信息：Seata 拦截并解析业务 SQL，得到 SQL 的操作类型（UPDATE）、表名（`webset`）、判断条件（where name = 'C语言中文网'）等相关信息。
+* 获取 SQL 的基本信息：Seata 拦截并解析业务 SQL，得到 SQL 的操作类型（UPDATE）、表名（`webset`）、判断条件（`where name = 'C语言中文网'`）等相关信息。
 * 查询前镜像：根据得到的业务 SQL 信息，生成“前镜像查询语句”。
 
     ```mysql

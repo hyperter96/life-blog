@@ -54,26 +54,26 @@ CNI插件在k8s集群网络到底充当着什么角色呢？
 
 ## Flannel
 
-flannel是kubernetes默认提供网络插件。 Flannel 是由CoreOs团队开发社交的网络工具，CoreOS团队采用L3 Overlay模式设计flannel， 规定宿主机下各个Pod属于同一个子网，不同宿主机下的Pod属于不同的子网。
+flannel 是kubernetes 默认提供网络插件。 Flannel 是由 CoreOS 团队开发社交的网络工具，CoreOS 团队采用L3 Overlay 模式设计 flannel， 规定宿主机下各个 Pod 属于同一个子网，不同宿主机下的Pod属于不同的子网。
 
-* flannel会在每一个宿主机上运行名为 `flanneld` 代理，其负责为宿主机预先分配一个子网，并为Pod分配IP地址。Flannel使用Kubernetes或`etcd`来存储网络配置、分配的子网和主机公共IP等信息。数据包则通过`VXLAN、UDP`或`host-gw`这些类型的后端机制进行转发。
+* flannel 会在每一个宿主机上运行名为 `flanneld` 代理，其负责为宿主机预先分配一个子网，并为 Pod 分配IP地址。Flannel 使用Kubernetes或`etcd`来存储网络配置、分配的子网和主机公共IP等信息。数据包则通过`VXLAN、UDP`或`host-gw`这些类型的后端机制进行转发。
 
-Flannel致力于给k8s集群中的nodes提供一个3层网络，他并不控制node中的容器是如何进行组网的，仅仅关心流量如何在node之间流转。
+Flannel 致力于给 k8s 集群中的 nodes 提供一个3层网络，他并不控制 node 中的容器是如何进行组网的，仅仅关心流量如何在 node 之间流转。
 
 ![](https://cdn.jsdelivr.net/gh/hyperter96/hyperter96.github.io/img/cni-flannel.png)
 
-如上图ip为10.1.15.2的pod1与另外一个Node上的10.1.20.3的pod2进行通信。
+如上图ip为`10.1.15.2`的pod1与另外一个Node上的`10.1.20.3`的pod2进行通信。
 
-* 首先pod1通过veth对把数据包发送到docker0虚拟网桥，网桥通过查找转发表发现10.1.20.3不在自己管理的网段，就会把数据包
-转发给默认路由（这里为flannel0网桥）
+* 首先 pod1 通过`veth`对把数据包发送到`docker0`虚拟网桥，网桥通过查找转发表发现`10.1.20.3`不在自己管理的网段，就会把数据包
+转发给默认路由（这里为`flannel0`网桥）
 
-* `flannel.0`网桥是一个vxlan设备，`flannel.0`收到数据包后，由于自己不是目的地10.1.20.3，也要尝试将数据包重新发送出去。数据包沿着网络协议栈向下流动，在二层时需要封二层以太包，填写目的 `mac` 地址，这时一般应该发出arp：”who is 10.1.20.3″。但`vxlan`设备的特殊性就在于它并没有真正在二层发出这个`arp`包，而是由linux kernel引发一个”L3 MISS”事件并将arp请求发到用户空间的`flanned`程序。
+* `flannel.0`网桥是一个 vxlan 设备，`flannel.0`收到数据包后，由于自己不是目的地`10.1.20.3`，也要尝试将数据包重新发送出去。数据包沿着网络协议栈向下流动，在二层时需要封二层以太包，填写目的 `mac` 地址，这时一般应该发出arp：”who is `10.1.20.3`″。但`vxlan`设备的特殊性就在于它并没有真正在二层发出这个`arp`包，而是由 linux kernel 引发一个”L3 MISS”事件并将 arp 请求发到用户空间的`flanned`程序。
 
-* `flanned`程序收到”L3 MISS”内核事件以及`arp`请求(who is 10.1.20.3)后，并不会向外网发送 `arp request`，而是尝试从 `etcd` 查找该地址匹配的子网的`vtep`信息，也就是会找到node2上的`flannel.0`的mac地址信息，`flanned`将查询到的信息放入node1 host的`arp cache`表中，`flannel.0`完成这项工作后，linux kernel就可以在`arp table`中找到 10.1.20.3对应的`mac`地址并封装二层以太包了:
+* `flanned`程序收到”L3 MISS”内核事件以及`arp`请求(who is `10.1.20.3`)后，并不会向外网发送 `arp request`，而是尝试从 `etcd` 查找该地址匹配的子网的`vtep`信息，也就是会找到 node2 上的`flannel.0`的mac地址信息，`flanned`将查询到的信息放入 node1 host 的`arp cache`表中，`flannel.0`完成这项工作后，linux kernel 就可以在`arp table`中找到 `10.1.20.3`对应的`mac`地址并封装二层以太包了:
 
 * 由于是Vlanx设备，`flannel.0`还会对上面的包进行二次封装，封装新的以太网mac帧:
 
-* node上2的eth0接收到上述`vxlan`包，kernel将识别出这是一个`vxlan`包，于是拆包后将packet转给node上2的`flannel.0`。`flannel.0`再将这个数据包转到`docker0`，继而由`docker0`传输到 Pod2 的某个容器里。
+* node上2的`eth0`接收到上述`vxlan`包，kernel将识别出这是一个`vxlan`包，于是拆包后将packet转给node上2的`flannel.0`。`flannel.0`再将这个数据包转到`docker0`，继而由`docker0`传输到 Pod2 的某个容器里。
 
 如上图，总的来说就是建立 VXLAN 隧道，通过UDP把IP封装一层直接送到对应的节点，实现了一个大的 VLAN。
 

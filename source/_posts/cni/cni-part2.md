@@ -7,7 +7,7 @@ date: 2023-05-23 23:52:19
 tags: ['CNI', '网络', 'go']
 ---
 
-CNI的接口并不是指HTTP，gRPC接口，CNI接口是指对可执行程序的调用（`exec`)。这些可执行程序称之为CNI插件，以K8S为例，K8S节点默认的CNI插件路径为 `/opt/cni/bin` ，在K8S节点上查看该目录，可以看到可供使用的CNI插件：
+CNI的接口并不是指 HTTP，gRPC 接口，CNI接口是指对可执行程序的调用（`exec`)。这些可执行程序称之为 CNI 插件，以 K8S 为例，K8S 节点默认的CNI插件路径为 `/opt/cni/bin` ，在K8S节点上查看该目录，可以看到可供使用的CNI插件：
 
 ```bash
 $ ls /opt/cni/bin/
@@ -18,7 +18,7 @@ CNI的工作过程大致如下图所示：
 
 ![](https://cdn.jsdelivr.net/gh/hyperter96/hyperter96.github.io/img/cni-workflow.png)
 
-CNI通过JSON格式的配置文件来描述网络配置，当需要设置容器网络时，由容器运行时负责执行CNI插件，并通过CNI插件的标准输入（stdin）来传递配置文件信息，通过标准输出（stdout）接收插件的执行结果。图中的 `libcni` 是CNI提供的一个go package，封装了一些符合CNI规范的标准操作，便于容器运行时和网络插件对接CNI标准。
+CNI 通过 JSON 格式的配置文件来描述网络配置，当需要设置容器网络时，由容器运行时负责执行 CNI 插件，并通过CNI插件的标准输入（`stdin`）来传递配置文件信息，通过标准输出（`stdout`）接收插件的执行结果。图中的 `libcni` 是CNI提供的一个 go package，封装了一些符合 CNI 规范的标准操作，便于容器运行时和网络插件对接 CNI 标准。
 
 ## 插件入参
 
@@ -136,7 +136,7 @@ CNI插件的操作类型只有四种：`ADD`、`DEL`、`CHECK` 和 `VERSION`。 
 
 * 为容器所在的网络命名空间删除一个网络接口，或者
 * 撤销 `ADD` 操作的修改
-例如通过 DEL 将容器网络接口从主机网桥中删除。
+例如通过 `DEL` 将容器网络接口从主机网桥中删除。
 
 {% note primary flat %}
 其中网络接口名称由 `CNI_IFNAME` 指定，网络命名空间由 `CNI_NETNS` 指定。
@@ -144,7 +144,7 @@ CNI插件的操作类型只有四种：`ADD`、`DEL`、`CHECK` 和 `VERSION`。 
 
 ### CHECK
 
-`CHECK` 操作是`v0.4.0`加入的类型，用于检查网络设置是否符合预期。容器运行时可以通过`CHECK`来检查网络设置是否出现错误，当CHECK返回错误时（返回了一个非0状态码），容器运行时可以选择`Kill`掉容器，通过重新启动来重新获得一个正确的网络配置。
+`CHECK` 操作是`v0.4.0`加入的类型，用于检查网络设置是否符合预期。容器运行时可以通过`CHECK`来检查网络设置是否出现错误，当`CHECK`返回错误时（返回了一个非0状态码），容器运行时可以选择`Kill`掉容器，通过重新启动来重新获得一个正确的网络配置。
 
 ### VERSION
 
@@ -157,7 +157,7 @@ $ CNI_COMMAND=VERSION /opt/cni/bin/bridge
 
 ## 链式调用
 
-单个CNI插件的职责是单一的，比如`bridge`插件负责网桥的相关配置， `firewall`插件负责防火墙相关配置， `portmap` 插件负责端口映射相关配置。因此，当网络设置比较复杂时，通常需要调用多个插件来完成。CNI支持插件的链式调用，可以将多个插件组合起来，按顺序调用。例如先调用 `bridge` 插件设置容器IP，将容器网卡与主机网桥连通，再调用`portmap`插件做容器端口映射。容器运行时可以通过在配置文件设置`plugins`数组达到链式调用的目的：
+单个 CNI 插件的职责是单一的，比如`bridge`插件负责网桥的相关配置， `firewall`插件负责防火墙相关配置， `portmap` 插件负责端口映射相关配置。因此，当网络设置比较复杂时，通常需要调用多个插件来完成。 CNI 支持插件的链式调用，可以将多个插件组合起来，按顺序调用。例如先调用 `bridge` 插件设置容器 IP，将容器网卡与主机网桥连通，再调用`portmap`插件做容器端口映射。容器运行时可以通过在配置文件设置`plugins`数组达到链式调用的目的：
 
 ```json
 {
@@ -186,7 +186,7 @@ $ CNI_COMMAND=VERSION /opt/cni/bin/bridge
 }
 ```
 
-`plugins`这个字段并没有出现在上文描述的配置文件结构体中。的确，CNI使用了另一个结构体——`NetworkConfigList`来保存链式调用的配置：
+`plugins`这个字段并没有出现在上文描述的配置文件结构体中。的确，CNI 使用了另一个结构体——`NetworkConfigList`来保存链式调用的配置：
 
 ```go
 type NetworkConfigList struct {
@@ -198,7 +198,7 @@ type NetworkConfigList struct {
 }
 ```
 
-但CNI插件是不认识这个配置类型的。实际上，在调用CNI插件时，需要将`NetworkConfigList`转换成对应插件的配置文件格式，再通过标准输入（`stdin`）传递给CNI插件。例如在上面的示例中，实际上会先使用下面的配置文件调用 `bridge` 插件：
+但 CNI 插件是不认识这个配置类型的。实际上，在调用 CNI 插件时，需要将`NetworkConfigList`转换成对应插件的配置文件格式，再通过标准输入（`stdin`）传递给 CNI 插件。例如在上面的示例中，实际上会先使用下面的配置文件调用 `bridge` 插件：
 
 ```json
 {

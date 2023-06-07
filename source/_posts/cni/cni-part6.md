@@ -9,20 +9,20 @@ tags: ['CNI', '网络', 'go']
 
 ## VPC-CNI方案背景
 
-之前的文章分析过flannel网络模型，诚然，Flannel解决了k8s集群中容器间网络互通的问题，但对于如何解决集群内容器与集群外的虚拟机或者物理机直接互通的问题却无能为力。
-其实，更确切说法是集群外服务无法直接ping通集群内容器ip。那么就意味着，在类似`dubbo`这种微服务发现和注册场景中，在网络层，k8s集群外的consumer是无法直接连通集群内的provider的
+之前的文章分析过 flannel 网络模型，诚然，Flannel 解决了 k8s 集群中容器间网络互通的问题，但对于如何解决集群内容器与集群外的虚拟机或者物理机直接互通的问题却无能为力。
+其实，更确切说法是集群外服务无法直接 ping 通集群内容器ip。那么就意味着，在类似`dubbo`这种微服务发现和注册场景中，在网络层，k8s 集群外的consumer是无法直接连通集群内的provider的
 
 {% note primary flat %}
-可能有人不禁要问，flannel为什么对于这种场景无能为力？
+可能有人不禁要问，flannel 为什么对于这种场景无能为力？
 {% endnote %}
 
-这是因为，k8s集群中容器的ip是由`flanneld`"另起炉灶"独立生成的，并不在vpc网段的范围内，导致集群外的服务器上的路由表缺失相应的路由条目将数据包转发到容器内。
-聪明如你，马上想到"既然如此，那让容器分配的ip在vpc网段内，不就可以了吗?"
+这是因为，k8s 集群中容器的ip是由`flanneld`"另起炉灶"独立生成的，并不在vpc网段的范围内，导致集群外的服务器上的路由表缺失相应的路由条目将数据包转发到容器内。
+聪明如你，马上想到"既然如此，那让容器分配的 ip 在 vpc 网段内，不就可以了吗?"
 
 恭喜你，答对了！！！
 
-vpc-cni方案整体沿用的正是这样的思路:从VPC网段中分配ip给容器。这样，集群内外就实现了无差别的网络直连互通；另外一个好处是，这种方案由于省却了Flanneld解封装vxlan数据包的步骤，网络性能毋庸置疑上会有显著提升。
-在k8s的落地过程中，为了将业务系统平滑迁移到k8s中，尤其是建立在RPC+注册中心的微服务架构上,就必须保持集群内外的直连互通，这种场景下，vpc-cni方案无疑是首选。
+vpc-cni 方案整体沿用的正是这样的思路:从 VPC 网段中分配 ip给容器。这样，集群内外就实现了无差别的网络直连互通；另外一个好处是，这种方案由于省却了 Flanneld 解封装 vxlan 数据包的步骤，网络性能毋庸置疑上会有显著提升。
+在 k8s 的落地过程中，为了将业务系统平滑迁移到 k8s 中，尤其是建立在RPC+注册中心的微服务架构上,就必须保持集群内外的直连互通，这种场景下，vpc-cni 方案无疑是首选。
 
 ## VPC-CNI原理
 
@@ -31,14 +31,14 @@ vpc-cni方案整体沿用的正是这样的思路:从VPC网段中分配ip给容�
 Worker节点启动的时候挂载多个虚拟网卡ENI(`Elastic Netowrk Interface`)
 
 * 每个ENI都绑定了一个主IP(Primary ip) 和 多个 secondary ip
-* `ipamd`(Local IP Address Manager)运行在每个 worker 节点上,将所有ENI的所有 secondary ip 加入到本地ip地址池中
-* 当cni接受到创建 pod 事件请求时，就会通过 grpc 请求`ipamd`拿到 ip 并设置 pod 网络栈;反之，当接收到删除 pod 请求时就会通知`ipamd`释放ip并同时删除 pod 网络栈
+* `ipamd`(Local IP Address Manager)运行在每个 worker 节点上,将所有ENI的所有 secondary ip 加入到本地 ip 地址池中
+* 当 cni 接受到创建 pod 事件请求时，就会通过 grpc 请求`ipamd`拿到 ip 并设置 pod 网络栈;反之，当接收到删除 pod 请求时就会通知`ipamd`释放 ip 并同时删除 pod 网络栈
 
 ![](https://cdn.jsdelivr.net/gh/hyperter96/hyperter96.github.io/img/vpc-cni1.png)
 
 ## CNI接口
 
-遵守k8S CNI网络模型的接口规范,主要实现了`cmdAdd`、`cmdDel` 接口,分别处理 pod 网络的创建和销毁事件
+遵守 k8S CNI 网络模型的接口规范,主要实现了`cmdAdd`、`cmdDel` 接口,分别处理 pod 网络的创建和销毁事件
 
 ### cmdAdd
 
@@ -60,12 +60,12 @@ Worker节点启动的时候挂载多个虚拟网卡ENI(`Elastic Netowrk Interfac
             return errors.Wrap(err, "add cmd: failed to load k8s config from arg")
         }
         ...
-        // 通过grpc发起请求到ipamd server
+        // 通过grpc发起请求到 ipamd server
         conn, err := grpcClient.Dial(ipamdAddress, grpc.WithInsecure())
         ...
         c := rpcClient.NewCNIBackendClient(conn)
         
-            // 调用ipamd的AddNetwork接口获取ip地址
+            // 调用 ipamd 的 AddNetwork 接口获取 ip 地址
         r, err := c.AddNetwork(context.Background(),
             &pb.AddNetworkRequest{
                 ClientVersion:              version,
@@ -83,7 +83,7 @@ Worker节点启动的时候挂载多个虚拟网卡ENI(`Elastic Netowrk Interfac
             Mask: net.IPv4Mask(255, 255, 255, 255),
         }
         ...
-                    // 获取到ip后,调用driver模块配置pod的network namespace
+                    // 获取到 ip 后,调用 driver 模块配置 pod 的 network namespace
             err = driverClient.SetupNS(hostVethName, args.IfName, args.Netns, addr, int(r.DeviceNumber), r.VPCcidrs, r.UseExternalSNAT, mtu, log)
         }
         ...
@@ -107,7 +107,7 @@ Worker节点启动的时候挂载多个虚拟网卡ENI(`Elastic Netowrk Interfac
 
 ### cmdDel
 
-  释放pod ip并清理pod的网络环境
+  释放 pod ip 并清理 pod 的网络环境
 
   ```go
   func cmdDel(args *skel.CmdArgs) error {
@@ -158,7 +158,7 @@ Worker节点启动的时候挂载多个虚拟网卡ENI(`Elastic Netowrk Interfac
   
 ## Driver
 
-该模块主要提供创建和销毁pod网络栈的工具,driver 模块的主函数是`SetupNS`和`TeardownNS`
+该模块主要提供创建和销毁 pod 网络栈的工具,driver 模块的主函数是`SetupNS`和`TeardownNS`
 
 代码路径: `cmd/routed-eni-cni-plugin/driver.go`
 
@@ -230,7 +230,7 @@ Worker节点启动的时候挂载多个虚拟网卡ENI(`Elastic Netowrk Interfac
   
 ### createVethPairContext
 
-  createVethPairContext` 结构体包含了创建`vethpair`所需参数，`run` 方法其实是`setupVeth`函数的具体实现，包含了创建`vethpair`,启用`vethpir`、配置 pod`网关、路由等步骤
+  `createVethPairContext` 结构体包含了创建`vethpair`所需参数，`run` 方法其实是`setupVeth`函数的具体实现，包含了创建`vethpair`,启用`vethpir`、配置 pod 网关、路由等步骤
 
   ```go
   func newCreateVethPairContext(contVethName string, hostVethName string, addr *net.IPNet, mtu int) *createVethPairContext {
@@ -307,7 +307,7 @@ Worker节点启动的时候挂载多个虚拟网卡ENI(`Elastic Netowrk Interfac
         return errors.Wrap(err, "setup NS network: failed to add static ARP")
     }
     
-	// 将vethpair 的一端移动到主机侧 network namespace 
+	// 将 vethpair 的一端移动到主机侧 network namespace 
     if err = createVethContext.netLink.LinkSetNsFd(hostVeth, int(hostNS.Fd())); err != nil {
         return errors.Wrap(err, "setup NS network: failed to move veth to host netns")
     }
@@ -353,7 +353,7 @@ Worker节点启动的时候挂载多个虚拟网卡ENI(`Elastic Netowrk Interfac
 `IPAMD`是本地 ip 地址池管理进程，以`daemonset`的方式运行在每个 worker 节点上,维护着节点上所有可用 ip 地址。
 
 {% note primary flat %}
-那么,问题来了,ip地址池中的数据是从哪里来的呢？
+那么,问题来了,ip 地址池中的数据是从哪里来的呢？
 {% endnote %}
   
   

@@ -100,7 +100,7 @@ func (c *CNIConfig) addNetwork(ctx context.Context, name, cniVersion string, net
 }
 ```
 
-对每个插件的 addNetwork 操作分为三个部分：
+对每个插件的 `addNetwork` 操作分为三个部分：
 
 * 首先，调用 `FindInPath` 函数，根据插件的类型来查找插件的绝对路径；
 * 接着，调用 `buildOneConfig` 函数，从 `NetworkList` 中提取中当前插件的 `NetworkConfig` 结构，而其中的 `preResult` 是上一个插件的执行结果。
