@@ -15,10 +15,10 @@ SAGA 最初出现在1987年 Hector Garcaa-Molrna & Kenneth Salem 发表的论文
 
 例如我们要进行一个类似于银行跨行转账的业务，将A中的30元转给B，根据Saga事务的原理，我们将整个全局事务，切分为以下服务：
 
-- 转出（TransOut）服务，这里转出将会进行操作A-30
-- 转出补偿（TransOutCompensate）服务，回滚上面的转出操作，即A+30
-- 转入（TransIn）服务，转入将会进行B+30
-- 转入补偿（TransInCompensate）服务，回滚上面的转入操作，即B-30
+- 转出（`TransOut`）服务，这里转出将会进行操作`A-30`
+- 转出补偿（`TransOutCompensate`）服务，回滚上面的转出操作，即`A+30`
+- 转入（`TransIn`）服务，转入将会进行`B+30`
+- 转入补偿（`TransInCompensate`）服务，回滚上面的转入操作，即`B-30`
 
 整个 SAGA 事务的逻辑是：
 

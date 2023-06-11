@@ -70,6 +70,13 @@ default_category: uncategorized
 category_map:
 tag_map:
 
+aplayer:
+  meting: true
+  asset_inject: false
+
+pjax:
+  enable: ture
+  exclude:
 # Metadata elements
 ## https://developer.mozilla.org/en-US/docs/Web/HTML/Element/meta
 meta_generator: true

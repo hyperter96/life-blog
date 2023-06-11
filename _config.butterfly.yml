@@ -12,7 +12,7 @@ menu:
     分类: /categories/ || fa fa-folder-open
     随机: /random.html || fa fa-random
   生活||fa fa-heartbeat||hide:
-    音乐: /categories/music/ || fa fa-music
+    音乐: /music/ || fa fa-music
     照片: /categories/照片/ || fa fa-image
     摄影: /categories/摄影/ || fa fa-video-camera
   更多||fa fa-coffee:
@@ -442,6 +442,11 @@ post_beautify:
   enable: true
   title-prefix-icon: '\f0c1'
   title-prefix-icon-color: "#F47466"
+
+# Inject the css and script (aplayer/meting)
+aplayerInject:
+  enable: true
+  per_page: true
 
 # 全局字體
 font:
