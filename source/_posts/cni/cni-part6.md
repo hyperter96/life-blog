@@ -22,7 +22,7 @@ tags: ['CNI', '网络', 'go']
 恭喜你，答对了！！！
 
 vpc-cni 方案整体沿用的正是这样的思路:从 VPC 网段中分配 ip给容器。这样，集群内外就实现了无差别的网络直连互通；另外一个好处是，这种方案由于省却了 Flanneld 解封装 vxlan 数据包的步骤，网络性能毋庸置疑上会有显著提升。
-在 k8s 的落地过程中，为了将业务系统平滑迁移到 k8s 中，尤其是建立在RPC+注册中心的微服务架构上,就必须保持集群内外的直连互通，这种场景下，vpc-cni 方案无疑是首选。
+在 k8s 的落地过程中，为了将业务系统平滑迁移到 k8s 中，尤其是建立在 RPC+ 注册中心的微服务架构上,就必须保持集群内外的直连互通，这种场景下，vpc-cni 方案无疑是首选。
 
 ## VPC-CNI原理
 
@@ -53,14 +53,14 @@ Worker节点启动的时候挂载多个虚拟网卡ENI(`Elastic Netowrk Interfac
     
         conf, log, err := LoadNetConf(args.StdinData)
         ...
-        // 解析 k8s参数
+        // 解析 k8s 参数
         var k8sArgs K8sArgs
         if err := cniTypes.LoadArgs(args.Args, &k8sArgs); err != nil {
             log.Errorf("Failed to load k8s config from arg: %v", err)
             return errors.Wrap(err, "add cmd: failed to load k8s config from arg")
         }
         ...
-        // 通过grpc发起请求到 ipamd server
+        // 通过 grpc 发起请求到 ipamd server
         conn, err := grpcClient.Dial(ipamdAddress, grpc.WithInsecure())
         ...
         c := rpcClient.NewCNIBackendClient(conn)
@@ -124,7 +124,7 @@ Worker节点启动的时候挂载多个虚拟网卡ENI(`Elastic Netowrk Interfac
 		log.Errorf("Failed to load k8s config from args: %v", err)
 		return errors.Wrap(err, "del cmd: failed to load k8s config from args")
 	}
-	// 发起grpc请求通知ipamd释放ip
+	// 发起 grpc 请求通知 ipamd 释放 ip
 	conn, err := grpcClient.Dial(ipamdAddress, grpc.WithInsecure())
 	...
 	c := rpcClient.NewCNIBackendClient(conn)
@@ -147,7 +147,7 @@ Worker节点启动的时候挂载多个虚拟网卡ENI(`Elastic Netowrk Interfac
 			Mask: net.IPv4Mask(255, 255, 255, 255),
 		}
 		... 
-		// 调用driver模块的TearDownNS接口删除清理pod网络栈
+		// 调用 driver 模块的 TearDownNS 接口删除清理 pod 网络栈
 		err = driverClient.TeardownNS(addr, int(r.DeviceNumber), log)
           ...
 	      return nil
@@ -181,7 +181,7 @@ Worker节点启动的时候挂载多个虚拟网卡ENI(`Elastic Netowrk Interfac
   func setupNS(hostVethName string, contVethName string, netnsPath string, addr *net.IPNet, deviceNumber int, vpcCIDRs []string, useExternalSNAT bool,
   netLink netlinkwrapper.NetLink, ns nswrapper.NS, mtu int, log logger.Logger, procSys procsyswrapper.ProcSys) error {
 
-        // 调用setupVeth函数设置pod网络环境
+        // 调用 setupVeth 函数设置 pod 网络环境
         hostVeth, err := setupVeth(hostVethName, contVethName, netnsPath, addr, netLink, ns, mtu, procSys, log)
         ...
         addrHostAddr := &net.IPNet{
@@ -189,24 +189,24 @@ Worker节点启动的时候挂载多个虚拟网卡ENI(`Elastic Netowrk Interfac
             Mask: net.CIDRMask(32, 32),
 		}
 
-        // 在节点上的主路由表添加到pod的路由 ip route add $ip dev veth-1 
+        // 在节点上的主路由表添加到 pod 的路由 ip route add $ip dev veth-1 
         route := netlink.Route{
             LinkIndex: hostVeth.Attrs().Index,
             Scope:     netlink.SCOPE_LINK,
             Dst:       addrHostAddr,
 		}
    
-        // netlink接口封装了linux的 "ip link"、"ip route"、 "ip rule"等命令
+        // netlink 接口封装了 linux 的 "ip link"、"ip route"、 "ip rule"等命令
         if err := netLink.RouteReplace(&route); err != nil {
             return errors.Wrapf(err, "setupNS: unable to add or replace route entry for %s", route.Dst.IP.String())
         }
     
-        // 使用"ip rule"命令添加to-pod策略路由  512: from all to 10.0.97.30 lookup main 
+        // 使用 "ip rule" 命令添加 to-pod 策略路由  512: from all to 10.0.97.30 lookup main 
         err = addContainerRule(netLink, true, addr, mainRouteTable)
         ...
     
-       // 通过ENI deviceNumber 判断是否primary ENI, 0表示Primary ENI
-       // 如果ENI不是 primary ENI,则添加流量从pod出来的策略路由 
+       // 通过ENI deviceNumber 判断是否 primary ENI, 0表示 Primary ENI
+       // 如果 ENI 不是 primary ENI,则添加流量从 pod 出来的策略路由 
        //  1536: from 10.0.97.30 lookup eni-1 
         if deviceNumber > 0 {
             tableNumber := deviceNumber + 1
@@ -254,14 +254,14 @@ Worker节点启动的时候挂载多个虚拟网卡ENI(`Elastic Netowrk Interfac
             PeerName: createVethContext.hostVethName,
         }
 
-	// 执行 ip link add 为pod创建vethpair
+	// 执行 ip link add 为 pod 创建 vethpair
     if err := createVethContext.netLink.LinkAdd(veth); err != nil {
         return err
     }
 
     hostVeth, err := createVethContext.netLink.LinkByName(createVethContext.hostVethName)
     ...
-	// 执行 ip link set $link up 启用vethpair的主机端
+	// 执行 ip link set $link up 启用 vethpair 的主机端
     if err = createVethContext.netLink.LinkSetUp(hostVeth); err != nil {
         return errors.Wrapf(err, "setup NS network: failed to set link %q up", createVethContext.hostVethName)
     }
@@ -271,12 +271,12 @@ Worker节点启动的时候挂载多个虚拟网卡ENI(`Elastic Netowrk Interfac
         return errors.Wrapf(err, "setup NS network: failed to find link %q", createVethContext.contVethName)
     }
 
-    // 启用pod端的vethpair
+    // 启用 pod 端的 vethpair
     if err = createVethContext.netLink.LinkSetUp(contVeth); err != nil {
         return errors.Wrapf(err, "setup NS network: failed to set link %q up", createVethContext.contVethName)
     }
 
-	// 添加默认网关169.254.1.1   route add default gw addr
+	// 添加默认网关 169.254.1.1   route add default gw addr
     if err = createVethContext.netLink.RouteReplace(&netlink.Route{
         LinkIndex: contVeth.Attrs().Index,
         Scope:     netlink.SCOPE_LINK,
@@ -290,12 +290,12 @@ Worker节点启动的时候挂载多个虚拟网卡ENI(`Elastic Netowrk Interfac
         return errors.Wrap(err, "setup NS network: failed to add default route")
     }
     
-	// 给网卡eth0添加ip地址 "ip addr add $ip dev eth0"
+	// 给网卡 eth0 添加 ip 地址 "ip addr add $ip dev eth0"
     if err = createVethContext.netLink.AddrAdd(contVeth, &netlink.Addr{IPNet: createVethContext.addr}); err != nil {
         return errors.Wrapf(err, "setup NS network: failed to add IP addr to %q", createVethContext.contVethName)
     }
 
-    // 为默认网关添加arp静态条目
+    // 为默认网关添加 arp 静态条目
     neigh := &netlink.Neigh{
         LinkIndex:    contVeth.Attrs().Index,
         State:        netlink.NUD_PERMANENT,
@@ -327,13 +327,13 @@ Worker节点启动的时候挂载多个虚拟网卡ENI(`Elastic Netowrk Interfac
 
   func tearDownNS(addr *net.IPNet, deviceNumber int, netLink netlinkwrapper.NetLink, log logger.Logger) error {
 	  ...
-      // 删除to-pod方向的策略路由 执行 "ip rule del"
+      // 删除 to-pod 方向的策略路由 执行 "ip rule del"
       toContainerRule := netLink.NewRule()
       toContainerRule.Dst = addr
       toContainerRule.Priority = toContainerRulePriority
       err := netLink.RuleDel(toContainerRule)
       ...
-      // 判断ENI是否为Primary ENI,如果是非Primary,则同时删除from-pod的策略路由
+      // 判断 ENI 是否为 Primary ENI,如果是非 Primary,则同时删除 from-pod 的策略路由
       if deviceNumber > 0 {
       err := deleteRuleListBySrc(*addr)
       ...
