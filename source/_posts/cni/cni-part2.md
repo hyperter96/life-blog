@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "CNI part2: CNI插件是怎么工作的"
+title: "CNI 系列二: CNI插件是怎么工作的"
 cover: https://cdn.jsdelivr.net/gh/hyperter96/hyperter96.github.io/img/cni-part2.jpg
 categories: "CNI"
 date: 2023-05-23 23:52:19

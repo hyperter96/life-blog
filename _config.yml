@@ -5,7 +5,7 @@
 # Site
 title: 皮特ᴾᵗの闲逸客栈
 subtitle: ''
-description: '一位热爱技术、偶尔碎碎念的程序猿，对生活充满着期望'
+description: '一位热爱技术、偶尔碎碎念的程序猿，一直执着于实现自我价值！'
 keywords: ''
 author: 皮特ᴾᵗ
 language: zh-CN
@@ -13,7 +13,7 @@ timezone: 'Asia/Shanghai'
 
 # URL
 ## Set your site url here. For example, if you use GitHub Page, set url as 'https://username.github.io/project'
-url: https://hyperter96.github.io
+url: https://hyperter96.github.io/homepage
 permalink: /:title/
 permalink_defaults:
 pretty_urls:

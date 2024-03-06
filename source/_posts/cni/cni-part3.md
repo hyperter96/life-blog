@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "CNI part3: CNI的IP地址管理插件(IPAM Plugins)"
+title: "CNI 系列三: CNI的IP地址管理插件(IPAM Plugins)"
 cover: https://cdn.jsdelivr.net/gh/hyperter96/hyperter96.github.io/img/cni-part3.jpg
 categories: "CNI"
 date: 2023-05-24 23:52:19

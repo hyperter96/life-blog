@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "CNI part1: CNI插件在k8s集群网络充当什么角色"
+title: "CNI 系列一: CNI插件在k8s集群网络充当什么角色"
 cover: https://cdn.jsdelivr.net/gh/hyperter96/hyperter96.github.io/img/cni-part1.jpg
 categories: "CNI"
 date: 2023-05-21 23:52:19

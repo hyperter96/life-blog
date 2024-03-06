@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "CNI part4: CNI插件的实现"
+title: "CNI 系列四: CNI插件的实现"
 cover: https://cdn.jsdelivr.net/gh/hyperter96/hyperter96.github.io/img/cni-part4.jpg
 categories: "CNI"
 date: 2023-05-26 23:52:19
