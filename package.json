@@ -14,7 +14,7 @@
   "dependencies": {
     "cheerio": "^1.0.0-rc.11",
     "hexo": "^6.2.0",
-    "hexo-algoliasearch": "^1.0.0",
+    "hexo-algoliasearch": "^2.0.1",
     "hexo-butterfly-categories-card": "^1.0.0",
     "hexo-butterfly-charts": "^1.1.4",
     "hexo-butterfly-wowjs": "^1.0.5",
