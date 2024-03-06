@@ -33,7 +33,7 @@
     "hexo-server": "^3.0.0",
     "hexo-tag-aplayer": "^3.0.4",
     "hexo-theme-butterfly": "^4.2.1",
-    "hexo-theme-landscape": "^0.0.3",
+    "hexo-theme-landscape": "^1.0.0",
     "object-assign": "^4.1.1",
     "pre-commit": "^1.2.2",
     "typed.js": "^2.0.15"
