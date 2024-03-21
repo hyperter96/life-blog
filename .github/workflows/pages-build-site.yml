@@ -45,6 +45,6 @@ jobs:
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
-          github_token: ${{ secrets.SUGAR_BLOG_TOKEN }}
+          github_token: ${{ secrets.SUGAR_LIFE_BLOG_TOKEN }}
           exclude_assets: ''
           publish_dir: docs/.vitepress/dist
