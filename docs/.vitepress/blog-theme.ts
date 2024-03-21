@@ -52,7 +52,7 @@ const blogTheme = getThemeConfig({
       des: '你的指尖用于改变世界的力量',
       avatar:
         'https://cdn.jsdelivr.net/gh/hyperter96/tech-blog@gh-pages/selfie.jpeg',
-      url: 'https://hyperter96.github.io/tech-blog/',
+      url: 'https://hyperter96.github.io/life-blog/',
     },
     {
       nickname: '洋洋得意',
@@ -69,7 +69,7 @@ const blogTheme = getThemeConfig({
   ],
 
   comment: {
-    repo: 'hyperter96/hyperter96.github.io',
+    repo: 'hyperter96/life-blog',
     repoId: 'R_kgDOH72H1Q',
     category: 'General',
     categoryId: 'DIC_kwDOH72H1c4CeH5P',

@@ -11,12 +11,12 @@ export default defineConfig({
   lang: 'zh-CN',
   title: '皮特ᴾᵗ的博客生活',
   description: '热衷于分享生活，一直为实现自我价值而执着！',
-  base: "/", // 部署到github上时访问的根目录
+  base: "/life-blog/", // 部署到github上时访问的根目录
   lastUpdated: true,
   // 详见：https://vitepress.dev/zh/reference/site-config#head
   head: [
     // 配置网站的图标（显示在浏览器的 tab 上）
-    ['link', { rel: 'icon', href: '/favicon.ico' }],
+    ['link', { rel: 'icon', href: '/life-blog/favicon.ico' }],
   ],
   markdown: {
     image: {
@@ -47,7 +47,7 @@ export default defineConfig({
     logo: '/selfie.jpeg',
     editLink: {
       pattern:
-        'https://github.com/hyperter96/hyperter96.github.io/tree/main/docs/:path',
+        'https://github.com/hyperter96/life-blog/tree/main/docs/:path',
       text: '去 GitHub 上编辑内容'
     },
     nav: [
@@ -60,7 +60,7 @@ export default defineConfig({
     socialLinks: [
       {
         icon: 'github',
-        link: 'https://github.com/hyperter96/hyperter96.github.io'
+        link: 'https://github.com/hyperter96/life-blog'
       }
     ]
   },
