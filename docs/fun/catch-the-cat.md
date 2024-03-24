@@ -12,6 +12,7 @@ sidebar: false
 cover: https://cdn.jsdelivr.net/gh/hyperter96/tech-blog/docs/assets/images/catch-the-cat.jpg
 tags:
  - 其它
+top: 1
 ---
 
 # 逮住那只猫！
