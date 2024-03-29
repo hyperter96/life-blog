@@ -52,7 +52,7 @@ const blogTheme = getThemeConfig({
       des: '你的指尖用于改变世界的力量',
       avatar:
         'https://cdn.jsdelivr.net/gh/hyperter96/tech-blog@gh-pages/selfie.jpeg',
-      url: 'https://hyperter96.github.io/life-blog/',
+      url: 'https://life.hyperter.top',
     },
     {
       nickname: '洋洋得意',
@@ -91,14 +91,10 @@ const blogTheme = getThemeConfig({
   popover: {
     title: '公告',
     body: [
-      { type: 'text', content: '👇公众号👇---👇 微信 👇' },
+      { type: 'text', content: '👇微信扫码添加好友👇' },
       {
         type: 'image',
-        src: 'https://cdn.jsdelivr.net/gh/hyperter96/tech-blog/docs/assets/images/announcement.jpg'
-      },
-      {
-        type: 'text',
-        content: '欢迎大家添加公众号&私信交流'
+        src: 'https://cdn.jsdelivr.net/gh/hyperter96/tech-blog/docs/assets/images/qrcode2.png'
       },
       {
         type: 'button',
@@ -107,11 +103,11 @@ const blogTheme = getThemeConfig({
       },
       {
         type: 'button',
-        content: '添加微信',
+        content: '技术博客',
         props: {
           type: 'success'
         },
-        link: 'https://cdn.jsdelivr.net/gh/hyperter96/tech-blog/docs/assets/images/wechat-code.jpg',
+        link: 'https://cs.hyperter.top',
       }
     ],
     duration: -1

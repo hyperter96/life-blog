@@ -16,7 +16,8 @@ import {
 import '@nolebase/vitepress-plugin-enhanced-readabilities/dist/style.css'
 import vitepressMusic from 'vitepress-plugin-music'
 import 'vitepress-plugin-music/lib/css/index.css'
-
+import vitepressNprogress from 'vitepress-plugin-nprogress'
+import 'vitepress-plugin-nprogress/lib/css/index.css'
 const playlist = [
   {
     name: '一起看星星（治愈曲）',
@@ -61,6 +62,7 @@ export default {
     },
     enhanceApp: (ctx) => {
       vitepressMusic(playlist)
+      vitepressNprogress(ctx)
       ctx.app.provide(InjectionKey, {
         locales: { // 配置国际化
           'zh-CN': { // 配置简体中文
