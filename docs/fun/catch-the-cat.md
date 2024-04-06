@@ -1,21 +1,13 @@
 ---
 date: 2021-02-02T11:04:49+08:00
 draft: false
-head:
-  - - script
-    - src: 'https://cdn.jsdelivr.net/gh/hyperter96/tech-blog/docs/assets/js/phaser.min.js'
-  - - script
-    - src: 'https://cdn.jsdelivr.net/gh/hyperter96/tech-blog/docs/assets/js/cat/catch-the-cat.js'
-  - - script
-    - src: 'https://cdn.jsdelivr.net/gh/hyperter96/tech-blog/docs/assets/js/game.js'
 sidebar: false
+title: 逮住那只猫！
 cover: https://cdn.jsdelivr.net/gh/hyperter96/tech-blog/docs/assets/images/catch-the-cat.jpg
 tags:
  - 其它
 top: 1
 ---
-
-# 逮住那只猫！
 
 ## 游戏规则
 
