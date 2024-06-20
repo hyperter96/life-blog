@@ -92,8 +92,11 @@ const blogTheme = getThemeConfig({
       },
       {
         type: 'button',
-        content: '云原生文档',
-        link: 'https://ikubevirt.cn'
+        content: 'Rust知识库',
+        props: {
+          type: 'danger',
+        },
+        link: 'https://rust.hyperter.top',
       },
       {
         type: 'button',
